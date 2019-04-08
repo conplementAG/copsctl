@@ -2,14 +2,6 @@
 
 
 [[projects]]
-  digest = "1:e2921241c77283579f383d04139a68aaca100668a26de5e1bc56d29d896ee304"
-  name = "github.com/ahmetb/go-linq"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "7e71c124c1f903df09ca08678f145f68b45d125e"
-  version = "v3.0.0"
-
-[[projects]]
   digest = "1:5b290e0afae8906d379aa7fe01ce2007930636bdb80a96e148346131dd433cb8"
   name = "github.com/briandowns/spinner"
   packages = ["."]
@@ -186,7 +178,6 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
-    "github.com/ahmetb/go-linq",
     "github.com/briandowns/spinner",
     "github.com/fatih/color",
     "github.com/spf13/cobra",
