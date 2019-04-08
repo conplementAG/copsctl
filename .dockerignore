@@ -1,4 +1,4 @@
 Dockerfile
 .gitignore
-.git
+# .git dont't put git on dockerignore since it is actually required in docker for GoReleaser
 .cache
