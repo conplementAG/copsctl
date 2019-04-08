@@ -21,3 +21,9 @@ func GetCurrentConfig() *ConfigResponse {
 	json.Unmarshal([]byte(out), &config)
 	return config
 }
+
+func Apply(filepath string) string {
+	command := "kubectl apply -f " + filepath
+	data := commands.ExecuteCommandLongRunning(commands.Create(command))
+	return data
+}

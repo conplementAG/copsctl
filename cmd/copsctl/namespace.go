@@ -5,6 +5,7 @@ import (
 
 	"github.com/conplementAG/copsctl/pkg/namespace"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 func createNamespaceCommand() *cobra.Command {
@@ -13,7 +14,7 @@ func createNamespaceCommand() *cobra.Command {
 		Short: "Command group for administration of k8s namespaces",
 		Long: `
 Use this command to administer k8s namespaces.
-		`,
+        `,
 		Run: func(cmd *cobra.Command, args []string) {
 			// since "namespace" is not really a command, but rather a group of commands, we
 			// show the help for the command group instead
@@ -38,11 +39,17 @@ func createNamespaceCreateCommand() *cobra.Command {
 		Short: "Create a new namespace",
 		Long: `
 Use this command to create a new k8s namespace.
-		`,
+        `,
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("user", cmd.Flags().Lookup("user"))
+			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
+		},
 		Run: func(cmd *cobra.Command, args []string) {
-			namespace.Deploy()
+			namespace.Create()
 		},
 	}
 
+	command.PersistentFlags().StringP("user", "u", "", "The email-address of the admin user of the namespace. Must be identical to Azure AD (case-sensitive).")
+	command.MarkPersistentFlagRequired("user")
 	return command
 }
