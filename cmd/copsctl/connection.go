@@ -15,7 +15,6 @@ Use this command to manage the connection to a k8s cluster.
 		`,
 		PreRun: func(cmd *cobra.Command, args []string) {
 			viper.BindPFlag("environment-tag", cmd.Flags().Lookup("environment-tag"))
-			viper.BindPFlag("region", cmd.Flags().Lookup("region"))
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			connection.Connect()
@@ -23,7 +22,6 @@ Use this command to manage the connection to a k8s cluster.
 	}
 
 	command.PersistentFlags().StringP("environment-tag", "e", "", "The environment tag of the cluster you want to connect to")
-	command.PersistentFlags().StringP("region", "r", "northeurope", "The azure region where the cluster is running")
 	command.MarkPersistentFlagRequired("environment-tag")
 
 	return command
