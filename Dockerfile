@@ -3,11 +3,7 @@ FROM golang:latest
 RUN apt-get update && \
     apt-get install lsb-release -y
 
-# Azure CLI
-RUN echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $(lsb_release -cs) main" > /etc/apt/sources.list.d/azure-cli.list
-RUN curl -L https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
 RUN apt-get install apt-transport-https
-RUN apt-get update && apt-get install azure-cli
 
 # kubectl
 RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
@@ -19,16 +15,24 @@ RUN go version
 
 # dep package manager
 RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
- 
+
 ADD . /go/src/github.com/conplementAG/copsctl
 WORKDIR /go/src/github.com/conplementAG/copsctl
 
+# restore packages
 RUN dep ensure
 
+# simple build
 WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
 RUN go build -o copsctl .
 
+# run the tests
 WORKDIR /go/src/github.com/conplementAG/copsctl
 RUN go test ./... --cover
+
+# complex build with all platforms, optionally create Release with latest tag in GitHub as well
+WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
+ARG GITHUB_TOKEN
+RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL http://git.io/goreleaser | bash -s -- release --skip-validate --rm-dist --skip-publish --snapshot ; else curl -sL http://git.io/goreleaser | bash -s -- release --skip-validate --rm-dist ; fi
 
 CMD [ "/bin/bash" ]
