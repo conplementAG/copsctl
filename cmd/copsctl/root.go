@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/conplementAG/copsctl/pkg/common/logging"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -33,12 +34,15 @@ func Execute() {
 }
 
 func init() {
+	logging.InitializeSimpleFormat()
+
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.AddCommand(createNamespaceCommand())
+	rootCmd.AddCommand(createConnectCommand())
 
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "If set logging will be verbose")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
