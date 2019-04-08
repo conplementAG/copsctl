@@ -9,15 +9,18 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Connect tries to set the current context in kubectl to the determined cluster context
 func Connect() {
 	environmentTag := viper.GetString("environment-tag")
 
 	config := kubernetes.GetCurrentConfig()
 	selectedContext := ""
-	for _, context := range config.Contexts {
-		if strings.HasPrefix(context.Context.User, "clusterUser_"+environmentTag+"-") {
-			selectedContext = context.Name
-			break
+	if len(config.Contexts) > 0 {
+		for _, context := range config.Contexts {
+			if strings.HasPrefix(context.Context.User, "clusterUser_"+environmentTag+"-") {
+				selectedContext = context.Name
+				break
+			}
 		}
 	}
 
@@ -26,6 +29,6 @@ func Connect() {
 		kubernetes.UseContext(selectedContext)
 		logging.LogSuccess("kubectl successfully setup")
 	} else {
-		panic("Could not find a proper context in your .kubeconfig")
+		panic("Could not find a proper context in your .kube/config")
 	}
 }
