@@ -6,15 +6,19 @@
 
 ## How to build the project
 
-1. Resolve all dependencies
+### 1. Resolve all dependencies
 
-`cd $GOPATH/src/github.com/conplementAG/copsctl`
-`dep ensure -v`
+```
+cd $GOPATH/src/github.com/conplementAG/copsctl
+dep ensure -v
+```
 
-2. Build the tool
+### 2. Build the tool
 
-`cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl`
-`go build .`
+```
+cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
+go build .
+```
 
 ## How to create a release
 
