@@ -18,8 +18,8 @@ var rootCmd = &cobra.Command{
     | (_| (_) | |_) \__ \ (__| |_| |
      \___\___/| .__/|___/\___|\__|_|
               |_|                       by Conplement AG
-			  
-	TODO: Example usage should be defined here!
+	
+	Version 0.1.0
     `,
 
 	Version: "0.1.0",
