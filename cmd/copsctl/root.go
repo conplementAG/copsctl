@@ -12,12 +12,12 @@ var rootCmd = &cobra.Command{
 	Short: "copsctl - the Conplement AG Kubernetes developer tooling",
 	Long: `
 
-	                          _   _ 
-	  ___ ___  _ __  ___  ___| |_| |
-	 / __/ _ \| '_ \/ __|/ __| __| |
-	| (_| (_) | |_) \__ \ (__| |_| |
- 	 \___\___/| .__/|___/\___|\__|_|
-			  |_|                       by Conplement AG
+                              _   _ 
+      ___ ___  _ __  ___  ___| |_| |
+     / __/ _ \| '_ \/ __|/ __| __| |
+    | (_| (_) | |_) \__ \ (__| |_| |
+     \___\___/| .__/|___/\___|\__|_|
+              |_|                       by Conplement AG
 			  
 	TODO: Example usage should be defined here!
     `,
