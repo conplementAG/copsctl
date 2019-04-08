@@ -1,3 +1,5 @@
 # generated executable files
 cmd/**/*.exe
 cmd/**/copctl
+vendor
+.vscode
