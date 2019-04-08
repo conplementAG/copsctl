@@ -2,6 +2,7 @@ package namespace
 
 import (
 	"strings"
+	"time"
 
 	"github.com/conplementAG/copsctl/pkg/adapters/kubernetes"
 	"github.com/conplementAG/copsctl/pkg/common/fileprocessing"
@@ -20,6 +21,8 @@ func Create() {
 	kubernetes.Apply(temporaryFile)
 	fileprocessing.DeletePath(temporaryDirectory)
 
+	ensureNamespaceAccess(namespaceName)
+
 	logging.LogSuccessf("Cops namespace %s successfully created\n", namespaceName)
 }
 
@@ -27,4 +30,18 @@ func renderTemplate(namespaceName string, adminUsername string) string {
 	copsnamespace := strings.Replace(copsNamespaceTemplate, "{{ namespaceName }}", namespaceName, -1)
 	copsnamespace = strings.Replace(copsnamespace, "{{ adminUsername }}", adminUsername, -1)
 	return copsnamespace
+}
+
+func ensureNamespaceAccess(namespace string) {
+	status := false
+	for i := 0; i < 10; i++ {
+		status := kubernetes.CanIGetPods(namespace)
+		if status == true {
+			break
+		}
+		time.Sleep(5 * time.Second)
+	}
+	if status == false {
+		panic("Could not verify access to pods in created namespace.")
+	}
 }

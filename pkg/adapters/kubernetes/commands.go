@@ -27,3 +27,7 @@ func Apply(filepath string) string {
 	data := commands.ExecuteCommandLongRunning(commands.Create(command))
 	return data
 }
+
+func CanIGetPods(namespace string) bool {
+	return commands.ExecutesSuccessfully(commands.Create("kubectl auth can-i get pods -n " + namespace))
+}
