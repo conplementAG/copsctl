@@ -2,6 +2,14 @@
 
 
 [[projects]]
+  digest = "1:5b290e0afae8906d379aa7fe01ce2007930636bdb80a96e148346131dd433cb8"
+  name = "github.com/briandowns/spinner"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "ac46072a5a9105597c1fd63f9e246477b116772e"
+  version = "1.6"
+
+[[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
   name = "github.com/fatih/color"
   packages = ["."]
@@ -67,14 +75,6 @@
   pruneopts = "UT"
   revision = "c2a7a6ca930a4cd0bc33a3f298eb71960732a3a7"
   version = "v0.0.7"
-
-[[projects]]
-  digest = "1:5d231480e1c64a726869bc4142d270184c419749d34f167646baa21008eb0a79"
-  name = "github.com/mitchellh/go-homedir"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "af06845cf3004701891bf4fdb884bfe4920b3727"
-  version = "v1.1.0"
 
 [[projects]]
   digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
@@ -178,8 +178,8 @@
   analyzer-name = "dep"
   analyzer-version = 1
   input-imports = [
+    "github.com/briandowns/spinner",
     "github.com/fatih/color",
-    "github.com/mitchellh/go-homedir",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
   ]
