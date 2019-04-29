@@ -41,7 +41,7 @@ func createNamespaceCreateCommand() *cobra.Command {
 Use this command to create a new k8s namespace.
         `,
 		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag("user", cmd.Flags().Lookup("user"))
+			viper.BindPFlag("users", cmd.Flags().Lookup("users"))
 			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
 		},
 		Run: func(cmd *cobra.Command, args []string) {
@@ -49,7 +49,7 @@ Use this command to create a new k8s namespace.
 		},
 	}
 
-	command.PersistentFlags().StringP("user", "u", "", "The email-address of the admin user of the namespace. Must be identical to Azure AD (case-sensitive).")
-	command.MarkPersistentFlagRequired("user")
+	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin users of the namespace. Must be identical to Azure AD (case-sensitive). You can specify multiple users separated by comma.")
+	command.MarkPersistentFlagRequired("users")
 	return command
 }

@@ -6,4 +6,4 @@ metadata:
   name: {{ namespaceName }}
 spec:
   namespace-admin-users:
-  - {{ adminUsername }}`
+{{ usernames }}`

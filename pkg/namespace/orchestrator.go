@@ -13,9 +13,10 @@ import (
 // Create creates a CopsNamespace Custom-Resource-Definition with the given name and user
 func Create() {
 	namespaceName := viper.GetString("name")
-	adminUsername := viper.GetString("user")
+	userNames := viper.GetString("users")
 
-	copsnamespace := renderTemplate(namespaceName, adminUsername)
+	users := parseUsernames(userNames)
+	copsnamespace := renderTemplate(namespaceName, users)
 
 	temporaryDirectory, temporaryFile := fileprocessing.WriteStringToTemporaryFile(copsnamespace, "copsnamespace.yaml")
 	kubernetes.Apply(temporaryFile)
@@ -26,10 +27,31 @@ func Create() {
 	logging.LogSuccessf("Cops namespace %s successfully created\n", namespaceName)
 }
 
-func renderTemplate(namespaceName string, adminUsername string) string {
+func renderTemplate(namespaceName string, userNames []string) string {
 	copsnamespace := strings.Replace(copsNamespaceTemplate, "{{ namespaceName }}", namespaceName, -1)
-	copsnamespace = strings.Replace(copsnamespace, "{{ adminUsername }}", adminUsername, -1)
+	copsnamespace = strings.Replace(copsnamespace, "{{ usernames }}", renderUsernames(userNames), -1)
 	return copsnamespace
+}
+
+func parseUsernames(userNames string) []string {
+	var parsedUsers []string
+	users := strings.Split(userNames, ",")
+	for _, username := range users {
+		parsedUsers = append(parsedUsers, username)
+	}
+	return parsedUsers
+}
+
+func renderUsernames(userNames []string) string {
+	userlist := ""
+	length := len(userNames)
+	for index, userName := range userNames {
+		userlist += "  - " + userName
+		if index != (length - 1) {
+			userlist += "\n"
+		}
+	}
+	return userlist
 }
 
 func ensureNamespaceAccess(namespace string) {
