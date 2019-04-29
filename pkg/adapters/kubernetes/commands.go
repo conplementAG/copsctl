@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/common/commands"
 )
@@ -29,5 +30,6 @@ func Apply(filepath string) string {
 }
 
 func CanIGetPods(namespace string) bool {
-	return commands.ExecutesSuccessfully(commands.Create("kubectl auth can-i get pods -n " + namespace))
+	data := commands.ExecuteCommand(commands.Create("kubectl auth can-i get pods -n " + namespace))
+	return strings.TrimSuffix(data, "\n") == "yes"
 }

@@ -35,7 +35,7 @@ func renderTemplate(namespaceName string, adminUsername string) string {
 func ensureNamespaceAccess(namespace string) {
 	status := false
 	for i := 0; i < 10; i++ {
-		status := kubernetes.CanIGetPods(namespace)
+		status = kubernetes.CanIGetPods(namespace)
 		if status == true {
 			break
 		}
