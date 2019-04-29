@@ -4,3 +4,4 @@ cmd/**/copctl
 cmd/copsctl/dist
 vendor
 .vscode
+.generated

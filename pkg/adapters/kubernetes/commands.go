@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/common/commands"
 )
@@ -20,4 +21,15 @@ func GetCurrentConfig() *ConfigResponse {
 	config := &ConfigResponse{}
 	json.Unmarshal([]byte(out), &config)
 	return config
+}
+
+func Apply(filepath string) string {
+	command := "kubectl apply -f " + filepath
+	data := commands.ExecuteCommandLongRunning(commands.Create(command))
+	return data
+}
+
+func CanIGetPods(namespace string) bool {
+	data := commands.ExecuteCommand(commands.Create("kubectl auth can-i get pods -n " + namespace))
+	return strings.TrimSuffix(data, "\n") == "yes"
 }
