@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/common/commands"
+	"github.com/conplementAG/copsctl/pkg/common/fileprocessing"
 )
 
 // UseContext sets the given context as the current context in the config file
@@ -23,10 +24,25 @@ func GetCurrentConfig() *ConfigResponse {
 	return config
 }
 
+// GetCopsNamespace gets the given CopsNamespace
+func GetCopsNamespace(namespace string) *CopsNamespaceResponse {
+	command := "kubectl get CopsNamespace " + namespace + " -o json"
+	out := commands.ExecuteCommand(commands.Create(command))
+	response := &CopsNamespaceResponse{}
+	json.Unmarshal([]byte(out), &response)
+	return response
+}
+
 func Apply(filepath string) string {
 	command := "kubectl apply -f " + filepath
 	data := commands.ExecuteCommandLongRunning(commands.Create(command))
 	return data
+}
+
+func ApplyString(content string) {
+	temporaryDirectory, temporaryFile := fileprocessing.WriteStringToTemporaryFile(content, "resource.yaml")
+	Apply(temporaryFile)
+	fileprocessing.DeletePath(temporaryDirectory)
 }
 
 func CanIGetPods(namespace string) bool {
