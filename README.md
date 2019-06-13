@@ -15,11 +15,20 @@ For contributing to the project, and fo development instructions, please check [
 ### Build the tool
 
 ```bash
-# Clone the project into your %GOPATH%
+
+# Clone the project into your %GOPATH%/src/github.com/conplementAG
 git clone https://github.com/conplementAG/copsctl.git
-# Build with go build
-cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
+
+# restore dependencies (dep package manager for Golang required)
+cd $GOPATH/src/github.com/conplementAG
+dep ensure
+
+# Build the binary
+cd cmd/copsctl
 go build .
+
+# run the executable, e.g. ./copsctl or set this directory to your path so that copsctl works as well
+
 ```
 
 ### Basic Commands
