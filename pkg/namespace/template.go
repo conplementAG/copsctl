@@ -5,5 +5,5 @@ kind: CopsNamespace
 metadata:
   name: {{ namespaceName }}
 spec:
-  namespaceAdminUsers:
+  namespace-admin-users:
 {{ usernames }}`
