@@ -10,6 +10,12 @@ func InitializeSimpleFormat() {
 	log.SetFlags(0)
 }
 
+func LogProvisioningStepStarted(text string) {
+	color.Set(color.FgYellow)
+	log.Println(text)
+	color.Unset()
+}
+
 func LogSuccess(text string) {
 	color.Set(color.FgGreen)
 	log.Println(text)
