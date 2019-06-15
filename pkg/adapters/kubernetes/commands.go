@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"log"
 	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/common/commands"
@@ -22,6 +23,13 @@ func GetCurrentConfig() *ConfigResponse {
 	config := &ConfigResponse{}
 	json.Unmarshal([]byte(out), &config)
 	return config
+}
+
+// PrintAllCopsNamespaces simply prints all cops namespaces to the console
+func PrintAllCopsNamespaces() {
+	command := "kubectl get copsnamespaces"
+	out := commands.ExecuteCommand(commands.Create(command))
+	log.Println(out)
 }
 
 // GetCopsNamespace gets the given CopsNamespace
