@@ -17,7 +17,9 @@ func Connect() {
 	selectedContext := ""
 	if len(config.Contexts) > 0 {
 		for _, context := range config.Contexts {
-			if strings.HasPrefix(context.Context.User, "clusterUser_"+environmentTag+"-") {
+			if strings.HasPrefix(context.Context.Cluster, environmentTag+"-") &&
+				(strings.HasPrefix(context.Context.User, "clusterUser_"+environmentTag+"-") ||
+					strings.HasPrefix(context.Context.User, "clusterAdmin_"+environmentTag+"-")) {
 				selectedContext = context.Name
 				break
 			}
