@@ -10,6 +10,11 @@ import (
 	"github.com/spf13/viper"
 )
 
+// List simply lists all of the coreops namespaces
+func List() {
+	kubernetes.PrintAllCopsNamespaces()
+}
+
 // Create creates a CopsNamespace Custom-Resource-Definition with the given name and user
 func Create() {
 	namespaceName := viper.GetString("name")
