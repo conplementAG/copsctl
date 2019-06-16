@@ -32,6 +32,9 @@ func createHelmInitCommand() *cobra.Command {
 		Use:   "init",
 		Short: "Initialize Helm",
 		Long:  "Use this command to initialize Helm in a namespace of your choice.",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("namespace", cmd.Flags().Lookup("namespace"))
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			helm.Init()
 		},
@@ -45,6 +48,9 @@ func createHelmDeleteCommand() *cobra.Command {
 		Use:   "delete",
 		Short: "Remove Helm",
 		Long:  "Use this command to remove Helm from your namespace.",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("namespace", cmd.Flags().Lookup("namespace"))
+		},
 		Run: func(cmd *cobra.Command, args []string) {
 			helm.Delete()
 		},
