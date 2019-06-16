@@ -57,3 +57,13 @@ func CanIGetPods(namespace string) bool {
 	data := commands.ExecuteCommand(commands.Create("kubectl auth can-i get pods -n " + namespace))
 	return strings.TrimSuffix(data, "\n") == "yes"
 }
+
+func CreateServiceAccount(namespace string, accountName string) {
+	command := "kubectl create serviceaccount " + accountName + " --namespace " + namespace
+	commands.ExecuteCommand(commands.Create(command))
+}
+
+func RemoveServiceAccount(namespace string, accountName string) {
+	command := "kubectl delete serviceaccount " + accountName + " --namespace " + namespace
+	commands.ExecuteCommand(commands.Create(command))
+}
