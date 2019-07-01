@@ -24,6 +24,9 @@ cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
 go get -u github.com/mjibson/esc
 go generate .
 
+# Install dependencies
+dep ensure
+
 # Compile to executable
 go build .
 ```
