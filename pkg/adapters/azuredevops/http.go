@@ -4,6 +4,7 @@ import (
 	"encoding/base64"
 	"fmt"
 	"log"
+	"net/url"
 
 	"github.com/imroc/req"
 	"github.com/spf13/viper"
@@ -33,7 +34,7 @@ func createBasicAuthHeader(username, password string) string {
 }
 
 func buildBaseUrl(organization string, project string) string {
-	return "https://dev.azure.com/" + organization + "/" + project + "/_apis/serviceendpoint/endpoints"
+	return url.QueryEscape("https://dev.azure.com/" + organization + "/" + project + "/_apis/serviceendpoint/endpoints")
 }
 
 func searchForEndpoint(name string, organization string, project string) endpointsByNameQueryResponse {

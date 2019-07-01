@@ -19,11 +19,21 @@ RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 ADD . /go/src/github.com/conplementAG/copsctl
 WORKDIR /go/src/github.com/conplementAG/copsctl
 
+# Trigger resource embedding
+WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
+RUN go get -u github.com/mjibson/esc
+RUN go generate
+WORKDIR /go/src/github.com/conplementAG/copsctl
+
+WORKDIR /go/src/github.com/conplementAG/copsctl/pkg/resources
+RUN ls -la
+
 # restore packages
 RUN dep ensure
 
 # simple build
 WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
+
 RUN go build -o copsctl .
 
 # run the tests

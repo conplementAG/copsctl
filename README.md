@@ -19,8 +19,23 @@ For contributing to the project, and fo development instructions, please check [
 git clone https://github.com/conplementAG/copsctl.git
 # Build with go build
 cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
+
+# Embedd resources
+go get -u github.com/mjibson/esc
+go generate .
+
+# Compile to executable
 go build .
 ```
+
+### Additional Info
+
+```bash
+# Embedd resources
+go get -u github.com/mjibson/esc
+```
+The  snippet above will put the `esc`-executable into your `$GOPATH/bin` directory, so it is available in the `go generate` phase.
+This is required because `esc` will search for `yaml-files` and embedd those into the final binary, so the executable can run idependant from any working directory.
 
 ### Basic Commands
 

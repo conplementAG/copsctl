@@ -97,8 +97,8 @@ func (orchestrator *AzureDevopsOrchestrator) prepareRbacFiles() string {
 }
 
 func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
-	return fileprocessing.InterpolateFiles(
-		filepath.Join("..", "pkg", "azuredevops", "global"),
+	return fileprocessing.InterpolateStaticFiles(
+		"pkg/azuredevops/global",
 		map[string]string{
 			"{{NAMESPACE}}":       "kube-system",
 			"{{ROLE_NAME}}":       orchestrator.roleName,
