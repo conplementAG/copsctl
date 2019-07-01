@@ -20,6 +20,8 @@ type AzureDevopsOrchestrator struct {
 	serviceAccountName string
 	roleName           string
 	endpointName       string
+	username           string
+	accesstoken        string
 }
 
 func NewOrchestrator() *AzureDevopsOrchestrator {
@@ -27,14 +29,8 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 	organization := viper.GetString("organization")
 	project := viper.GetString("project")
 	namespace := viper.GetString("namespace")
-
-	if organization == "" {
-		panic("Organization configuration is mandatory!")
-	}
-
-	if project == "" {
-		panic("Project configuratifon is mandatory!")
-	}
+	username := viper.GetString("username")
+	accesstoken := viper.GetString("accesstoken")
 
 	isGlobalScope := namespace == ""
 
@@ -51,6 +47,8 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 		serviceAccountName: strings.ToLower(organization) + "-" + strings.ToLower(project) + "-azuredevops-account",
 		roleName:           strings.ToLower(organization) + "-" + strings.ToLower(project) + "-" + namespace + "-azuredevops-role",
 		endpointName:       environmentTag + "-" + namespace,
+		username:           username,
+		accesstoken:        accesstoken,
 	}
 }
 
@@ -84,7 +82,15 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 	masterPlaneFqdn := kubernetes.GetCurrentMasterPlaneFqdn()
 
 	// now we can create the endpoint (aka. service connection / service endpoint)
-	azuredevops.CreateServiceEndpoint(orchestrator.endpointName, orchestrator.Organization, orchestrator.Project, masterPlaneFqdn, serviceAccountSecret.Data.Token, serviceAccountSecret.Data.CaCrt)
+	azuredevops.CreateServiceEndpoint(
+		orchestrator.username,
+		orchestrator.accesstoken,
+		orchestrator.endpointName,
+		orchestrator.Organization,
+		orchestrator.Project,
+		masterPlaneFqdn,
+		serviceAccountSecret.Data.Token,
+		serviceAccountSecret.Data.CaCrt)
 }
 
 func (orchestrator *AzureDevopsOrchestrator) prepareRbacFiles() string {

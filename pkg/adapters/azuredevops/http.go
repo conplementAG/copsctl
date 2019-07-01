@@ -9,20 +9,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-func prepareHeaders() req.Header {
-	username := viper.GetString("azure-devops.username")
-	token := viper.GetString("azure-devops.access-token")
-
+func prepareHeaders(username string, accesstoken string) req.Header {
 	if viper.GetBool("verbose") {
 		log.Println("Using username: " + username)
-		log.Println("Using token: " + token)
+		log.Println("Using token: " + accesstoken)
 	}
 
 	headers := make(map[string]string)
 
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	headers["Authorization"] = createBasicAuthHeader(username, token)
+	headers["Authorization"] = createBasicAuthHeader(username, accesstoken)
 
 	return headers
 }
@@ -36,8 +33,8 @@ func buildBaseUrl(organization string, project string) string {
 	return "https://dev.azure.com/" + organization + "/" + project + "/_apis/serviceendpoint/endpoints"
 }
 
-func searchForEndpoint(name string, organization string, project string) endpointsByNameQueryResponse {
-	headers := prepareHeaders()
+func searchForEndpoint(username string, accesstoken string, name string, organization string, project string) endpointsByNameQueryResponse {
+	headers := prepareHeaders(username, accesstoken)
 
 	param := req.QueryParam{
 		"api-version":   "5.0-preview.2",
@@ -74,8 +71,8 @@ func searchForEndpoint(name string, organization string, project string) endpoin
 	return response
 }
 
-func deleteEndpoint(endpointId string, organization string, project string) {
-	header := prepareHeaders()
+func deleteEndpoint(username string, accesstoken string, endpointId string, organization string, project string) {
+	header := prepareHeaders(username, accesstoken)
 
 	param := req.QueryParam{
 		"api-version": "5.0-preview.2",
@@ -100,8 +97,8 @@ func deleteEndpoint(endpointId string, organization string, project string) {
 	}
 }
 
-func createEndpoint(name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
-	headers := prepareHeaders()
+func createEndpoint(username string, accesstoken string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
+	headers := prepareHeaders(username, accesstoken)
 
 	param := req.QueryParam{
 		"api-version": "5.0-preview.2",
@@ -140,8 +137,8 @@ func createEndpoint(name string, organization string, project string, kubernetes
 	}
 }
 
-func updateEndpoint(endpointId string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
-	headers := prepareHeaders()
+func updateEndpoint(username string, accesstoken string, endpointId string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
+	headers := prepareHeaders(username, accesstoken)
 
 	param := req.QueryParam{
 		"api-version": "5.0-preview.2",

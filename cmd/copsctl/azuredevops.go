@@ -22,6 +22,8 @@ Use this command to administer Azure DevOps accounts (aka VSTS / hosted TFS).
 			viper.BindPFlag("organization", cmd.Flags().Lookup("organization"))
 			viper.BindPFlag("project", cmd.Flags().Lookup("project"))
 			viper.BindPFlag("namespace", cmd.Flags().Lookup("namespace"))
+			viper.BindPFlag("username", cmd.Flags().Lookup("username"))
+			viper.BindPFlag("accesstoken", cmd.Flags().Lookup("accesstoken"))
 		},
 		Run: func(cmd *cobra.Command, args []string) {
 			if len(args) == 0 {
@@ -41,6 +43,12 @@ Use this command to administer Azure DevOps accounts (aka VSTS / hosted TFS).
 
 	command.PersistentFlags().StringP("project", "p", "", "The name of VSTS project")
 	command.MarkPersistentFlagRequired("project")
+
+	command.PersistentFlags().StringP("accesstoken", "t", "", "Your access token to access Azure DevOps (see. Azure DevOps->Profile->Security)")
+	command.MarkPersistentFlagRequired("accesstoken")
+
+	command.PersistentFlags().StringP("username", "u", "", "Your username to access Azure DevOps (see. Azure DevOps->Profile->Security)")
+	command.MarkPersistentFlagRequired("username")
 
 	command.PersistentFlags().StringP("namespace", "n", "", "Namespace to which the endpoint can be scoped (RBAC rights)")
 
