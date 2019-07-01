@@ -5,7 +5,7 @@ type ConfigResponse struct {
 	APIVersion  string `json:"apiVersion"`
 	Preferences struct {
 	} `json:"preferences"`
-	Clusters Cluster `json:"clusters"`
+	Clusters []Cluster `json:"clusters"`
 	Users    []struct {
 		Name string `json:"name"`
 		User struct {
