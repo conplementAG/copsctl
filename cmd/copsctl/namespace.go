@@ -23,11 +23,22 @@ func createNamespaceCommand() *cobra.Command {
 		},
 	}
 
+	command.AddCommand(createNamespaceListCommand())
 	command.AddCommand(createNamespaceCreateCommand())
 	command.AddCommand(createNamespaceUsersCommand())
 
-	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
-	command.MarkPersistentFlagRequired("name")
+	return command
+}
+
+func createNamespaceListCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "list",
+		Short: "lists all the CoreOps namespaces",
+		Long:  "Use this list all the CoreOps namespaces inside this cluster.",
+		Run: func(cmd *cobra.Command, args []string) {
+			namespace.List()
+		},
+	}
 
 	return command
 }
@@ -45,6 +56,9 @@ func createNamespaceCreateCommand() *cobra.Command {
 			namespace.Create()
 		},
 	}
+
+	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
+	command.MarkPersistentFlagRequired("name")
 
 	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin users of the namespace. Must be identical to Azure AD (case-sensitive). You can specify multiple users separated by comma.")
 	command.MarkPersistentFlagRequired("users")
@@ -65,6 +79,9 @@ func createNamespaceUsersCommand() *cobra.Command {
 			}
 		},
 	}
+
+	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
+	command.MarkPersistentFlagRequired("name")
 
 	command.AddCommand(createNamespaceUsersAddCommand())
 	command.AddCommand(createNamespaceUsersRemoveCommand())
