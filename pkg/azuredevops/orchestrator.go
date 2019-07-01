@@ -2,7 +2,6 @@ package azuredevops
 
 import (
 	"log"
-	"path/filepath"
 	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/adapters/azuredevops"
@@ -108,8 +107,8 @@ func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 }
 
 func (orchestrator *AzureDevopsOrchestrator) prepareScopedRbacFiles() string {
-	return fileprocessing.InterpolateFiles(
-		filepath.Join("..", "pkg", "azuredevops", "scoped"),
+	return fileprocessing.InterpolateStaticFiles(
+		"pkg/azuredevops/scoped",
 		map[string]string{
 			"{{NAMESPACE}}":       orchestrator.Namespace,
 			"{{ROLE_NAME}}":       orchestrator.roleName,
