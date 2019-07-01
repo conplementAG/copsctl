@@ -43,6 +43,7 @@ func init() {
 	// will be global for your application.
 	rootCmd.AddCommand(createNamespaceCommand())
 	rootCmd.AddCommand(createConnectCommand())
+	rootCmd.AddCommand(createHelmCommand())
 
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "If set logging will be verbose")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
