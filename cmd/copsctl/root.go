@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/conplementAG/copsctl/pkg/common/logging"
+
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -43,6 +44,7 @@ func init() {
 	// will be global for your application.
 	rootCmd.AddCommand(createNamespaceCommand())
 	rootCmd.AddCommand(createConnectCommand())
+	rootCmd.AddCommand(createAzureDevopsCommand())
 	rootCmd.AddCommand(createHelmCommand())
 
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "If set logging will be verbose")

@@ -1,5 +1,7 @@
 package main
 
+//go:generate esc -o ../../pkg/resources/static.go -pkg resources -include=\\*.yaml ../..
+
 import (
 	"log"
 	"os"
@@ -9,7 +11,6 @@ import (
 
 func main() {
 	defer errorhandler()
-
 	Execute()
 }
 

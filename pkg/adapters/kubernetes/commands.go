@@ -5,6 +5,7 @@ import (
 	"log"
 	"strings"
 
+	"github.com/ahmetb/go-linq"
 	"github.com/conplementAG/copsctl/pkg/common/commands"
 	"github.com/conplementAG/copsctl/pkg/common/fileprocessing"
 )
@@ -64,6 +65,19 @@ func DeleteString(content string) {
 func CanIGetPods(namespace string) bool {
 	data := commands.ExecuteCommand(commands.Create("kubectl auth can-i get pods -n " + namespace))
 	return strings.TrimSuffix(data, "\n") == "yes"
+}
+
+func GetCurrentMasterPlaneFqdn() string {
+	currentConfig := GetCurrentConfig()
+	currentContextName := currentConfig.CurrentContext
+	currentContextResponse := linq.From(currentConfig.Contexts).SingleWithT(func(c Context) bool {
+		return c.Name == currentContextName
+	}).(Context)
+	currentClusterResponse := linq.From(currentConfig.Clusters).SingleWithT(func(c Cluster) bool {
+		return c.Name == currentContextResponse.Context.Cluster
+	}).(Cluster)
+
+	return currentClusterResponse.Cluster.Server
 }
 
 func CreateServiceAccount(namespace string, accountName string) {

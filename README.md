@@ -16,17 +16,42 @@ For contributing to the project, and fo development instructions, please check [
 
 ## Getting Started
 
-#### Connect to a cluster
+### Build the tool
+
+```bash
+# Clone the project into your %GOPATH%
+git clone https://github.com/conplementAG/copsctl.git
+# Build with go build
+cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
+
+# Embedd resources
+go get -u github.com/mjibson/esc
+go generate .
+
+# Install dependencies
+dep ensure
+
+# Compile to executable
+go build .
+```
+
+*Additional Info:*
+
+The  snippet above will put the `esc`-executable into your `$GOPATH/bin` directory, so it is available in the `go generate` phase.
+This is required because `esc` will search for `yaml-files` and embedd those into the final binary, so the executable can run idependant from any working directory.
+
+
+### Connect to a cluster
 `copsctrl connect -e <environment-tag>`
 
 (*Environment-tag determines the name of the cluster.*)
 
-#### Create a kubernetes namespace
+### Create a kubernetes namespace
 
 `copsctl namespace create -n <namespace-name> -u John.Smith@conplement.de`
 
 (*Namespace-name specifies the name of the kubernetes namespace.*)
 
-#### Show help
+### Show help
 
 `copsctl --help`
