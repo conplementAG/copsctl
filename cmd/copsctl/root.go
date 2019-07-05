@@ -45,6 +45,7 @@ func init() {
 	rootCmd.AddCommand(createNamespaceCommand())
 	rootCmd.AddCommand(createConnectCommand())
 	rootCmd.AddCommand(createAzureDevopsCommand())
+	rootCmd.AddCommand(createHelmCommand())
 
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "If set logging will be verbose")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))

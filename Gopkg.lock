@@ -23,7 +23,7 @@
   name = "github.com/conplementAg/copsctl"
   packages = ["pkg/resources"]
   pruneopts = "UT"
-  revision = "5b6ac9c03be548e93ec8344dab23df4f0e34f981"
+  revision = "53af109f7c66c65f02eab09b45cff8f60e92743f"
 
 [[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
