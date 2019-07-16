@@ -17,7 +17,7 @@ rules:
   resources: ["*"]
   verbs: ["*"]
 - apiGroups: ["monitoring.coreos.com"]
-  resources: ["servicemonitors"]
+  resources: ["servicemonitors", "prometheusrules"]
   verbs: ["*"]
 ---
 kind: RoleBinding
