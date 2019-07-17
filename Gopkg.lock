@@ -2,12 +2,12 @@
 
 
 [[projects]]
-  digest = "1:e2921241c77283579f383d04139a68aaca100668a26de5e1bc56d29d896ee304"
+  digest = "1:31bd9d70492aec37a6bf45a42e96ed0f37fab74aa619d539b5acb9477500eb79"
   name = "github.com/ahmetb/go-linq"
   packages = ["."]
   pruneopts = "UT"
-  revision = "7e71c124c1f903df09ca08678f145f68b45d125e"
-  version = "v3.0.0"
+  revision = "b1b02a14bd27fab06f03ca1e4eed893f5011c152"
+  version = "v3.1.0"
 
 [[projects]]
   digest = "1:937ce6e0cd5ccfec205f444a0d9c74f5680cbb68cd0a992b000559bf964ea20b"
@@ -18,12 +18,12 @@
   version = "v1.6.1"
 
 [[projects]]
-  branch = "feature/AzureDevOpsserviceendpointmanagement"
-  digest = "1:c26a7b43c73e475a975689e39d917e6229ac6fe4f26b4b1306857ce6e23ebf43"
+  digest = "1:0b9a44225ac58936f5c01269c908933ff64edfb98ce5e30b7850383d281bd029"
   name = "github.com/conplementAg/copsctl"
   packages = ["pkg/resources"]
   pruneopts = "UT"
-  revision = "53af109f7c66c65f02eab09b45cff8f60e92743f"
+  revision = "70d2c41f13c12b4df0a51a9d3f8c2aa922bb9ae3"
+  version = "v0.1.3"
 
 [[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
@@ -177,11 +177,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:730ba27cd66db3b98ec8f51a6f20d45ec277d490cca36b1f54e31d3fcaf4840e"
+  digest = "1:5632b0c4d972da51b5914f09fc5c1a8535e9d8d5d937e95ef83c423a0dd67f13"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "04f50cda93cbb67f2afa353c52f342100e80e625"
+  revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
 
 [[projects]]
   digest = "1:1093f2eb4b344996604f7d8b29a16c5b22ab9e1b25652140d3fede39f640d5cd"
