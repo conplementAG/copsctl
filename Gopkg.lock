@@ -26,14 +26,6 @@
   version = "v0.1.3"
 
 [[projects]]
-  digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
-  name = "github.com/fatih/color"
-  packages = ["."]
-  pruneopts = "UT"
-  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
-  version = "v1.7.0"
-
-[[projects]]
   digest = "1:abeb38ade3f32a92943e5be54f55ed6d6e3b6602761d74b4aab4c9dd45c18abd"
   name = "github.com/fsnotify/fsnotify"
   packages = ["."]
@@ -77,6 +69,14 @@
   version = "v1.0"
 
 [[projects]]
+  digest = "1:31e761d97c76151dde79e9d28964a812c46efc5baee4085b86f68f0c654450de"
+  name = "github.com/konsorten/go-windows-terminal-sequences"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "f55edac94c9bbba5d6182a4be46d86a2c9b5b50e"
+  version = "v1.0.2"
+
+[[projects]]
   digest = "1:5a0ef768465592efca0412f7e838cdc0826712f8447e70e6ccc52eb441e9ab13"
   name = "github.com/magiconair/properties"
   packages = ["."]
@@ -101,6 +101,14 @@
   version = "v0.0.8"
 
 [[projects]]
+  branch = "master"
+  digest = "1:2b32af4d2a529083275afc192d1067d8126b578c7a9613b26600e4df9c735155"
+  name = "github.com/mgutz/ansi"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "9520e82c474b0a04dd04f8a40959027271bab992"
+
+[[projects]]
   digest = "1:53bc4cd4914cd7cd52139990d5170d6dc99067ae31c56530621b18b35fc30318"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
@@ -123,6 +131,14 @@
   pruneopts = "UT"
   revision = "15d26544def341f036c5f8dca987a4cbe575032c"
   version = "v1.2.1"
+
+[[projects]]
+  digest = "1:04457f9f6f3ffc5fea48e71d62f2ca256637dee0a04d710288e27e05c8b41976"
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "839c75faf7f98a33d445d181f3018b5c3409a45e"
+  version = "v1.4.2"
 
 [[projects]]
   digest = "1:bb495ec276ab82d3dd08504bbc0594a65de8c3b22c6f2aaa92d05b73fbf3a82e"
@@ -176,10 +192,29 @@
   version = "v1.4.0"
 
 [[projects]]
+  digest = "1:39a425f98fb19427061a693fe6bf0683c9bddec4b25b17067e34fdb465e39cb9"
+  name = "github.com/x-cray/logrus-prefixed-formatter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "bb2702d423886830dee131692131d35648c382e2"
+  version = "v0.5.2"
+
+[[projects]]
   branch = "master"
-  digest = "1:5632b0c4d972da51b5914f09fc5c1a8535e9d8d5d937e95ef83c423a0dd67f13"
+  digest = "1:bbe51412d9915d64ffaa96b51d409e070665efc5194fcf145c4a27d4133107a4"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  pruneopts = "UT"
+  revision = "87dc89f01550277dc22b74ffcf4cd89fa2f40f4c"
+
+[[projects]]
+  branch = "master"
+  digest = "1:31d44814b45607afa77c6e8ef20ea8bacc1d1053fe084440c874f311732e7ec3"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows",
+  ]
   pruneopts = "UT"
   revision = "fae7ac547cb717d141c433a2a173315e216b64c4"
 
@@ -213,11 +248,13 @@
     "github.com/ahmetb/go-linq",
     "github.com/briandowns/spinner",
     "github.com/conplementAg/copsctl/pkg/resources",
-    "github.com/fatih/color",
     "github.com/imroc/req",
+    "github.com/mattn/go-colorable",
     "github.com/rs/xid",
+    "github.com/sirupsen/logrus",
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
+    "github.com/x-cray/logrus-prefixed-formatter",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"

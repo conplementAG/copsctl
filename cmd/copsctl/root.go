@@ -1,8 +1,10 @@
 package main
 
 import (
-	"github.com/conplementAG/copsctl/pkg/common/logging"
+	"os"
+	"strings"
 
+	"github.com/conplementAG/copsctl/pkg/common/logging"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -35,8 +37,6 @@ func Execute() {
 }
 
 func init() {
-	logging.InitializeSimpleFormat()
-
 	cobra.OnInitialize(initConfig)
 
 	// Here you will define your flags and configuration settings.
@@ -53,4 +53,11 @@ func init() {
 
 func initConfig() {
 	viper.AutomaticEnv() // read in environment variables that match
+
+	logging.Initialize()
+
+	logging.Debug("=============================================")
+	logging.Debug("===============    copsctl    ===============")
+	logging.Debug("=============================================")
+	logging.Debug("Command " + strings.Join(os.Args, " "))
 }

@@ -1,7 +1,6 @@
 package azuredevops
 
 import (
-	"log"
 	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/adapters/azuredevops"
@@ -53,22 +52,27 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 }
 
 func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
-	logging.LogProvisioningStepStarted("Connecting the current k8s cluster with an Azure DevOps account...")
+	logging.Info("Connecting the current k8s cluster with an Azure DevOps account...")
 
 	if orchestrator.globalScope {
-		log.Println("RBAC will be without limitation, since no 'namespace' was specified, and the RBAC resources will be in kube-system")
+		logging.Info("RBAC will be without limitation, since no 'namespace' was specified, and the RBAC resources will be in kube-system")
 	} else {
-		log.Println("RBAC will be scoped to namespace " + orchestrator.Namespace)
+		logging.Info("RBAC will be scoped to namespace " + orchestrator.Namespace)
 	}
 
-	logging.LogProvisioningStepStarted("Creating the RBAC resources")
+	logging.Info("Creating the RBAC resources")
 
 	outputPath := orchestrator.prepareRbacFiles()
 
-	kubernetes.Apply(outputPath)
+	_, err := kubernetes.Apply(outputPath)
+
+	if err != nil {
+		panic("Apply failed: " + err.Error())
+	}
+
 	fileprocessing.DeletePath(outputPath)
 
-	logging.LogProvisioningStepStarted("Setting up the Azure DevOps connection...")
+	logging.Info("Setting up the Azure DevOps connection...")
 
 	// first, get the token, the certificate of the created service account and the master plane FQDN
 	serviceAccount := kubernetes.GetServiceAccount(orchestrator.Namespace, orchestrator.serviceAccountName)
@@ -79,7 +83,9 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 
 	serviceAccountSecret := kubernetes.GetServiceAccountSecret(orchestrator.Namespace, serviceAccount.Secrets[0].Name)
 
-	masterPlaneFqdn := kubernetes.GetCurrentMasterPlaneFqdn()
+	masterPlaneFqdn, err := kubernetes.GetCurrentMasterPlaneFqdn()
+
+	panic("Could not get the master plane fqdn " + err.Error())
 
 	// now we can create the endpoint (aka. service connection / service endpoint)
 	azuredevops.CreateServiceEndpoint(

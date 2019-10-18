@@ -6,7 +6,11 @@ import (
 )
 
 func GetServiceAccount(namespace string, name string) ServiceAccount {
-	out := commands.ExecuteCommand(commands.Createf("kubectl get serviceaccount %s -n %s -o yaml --ignore-not-found", name, namespace))
+	out, err := commands.ExecuteCommand(commands.Createf("kubectl get serviceaccount %s -n %s -o yaml --ignore-not-found", name, namespace))
+
+	if err != nil {
+		panic("we should never get an err when using ignore-not-found " + err.Error())
+	}
 
 	if out == "" {
 		return ServiceAccount{}
@@ -19,7 +23,11 @@ func GetServiceAccount(namespace string, name string) ServiceAccount {
 }
 
 func GetServiceAccountSecret(namespace string, name string) ServiceAccountSecret {
-	out := commands.ExecuteCommand(commands.Createf("kubectl get secret %s -n %s -o yaml --ignore-not-found", name, namespace))
+	out, err := commands.ExecuteCommand(commands.Createf("kubectl get secret %s -n %s -o yaml --ignore-not-found", name, namespace))
+
+	if err != nil {
+		panic("we should never get an err when using ignore-not-found " + err.Error())
+	}
 
 	if out == "" {
 		return ServiceAccountSecret{}

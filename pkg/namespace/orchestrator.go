@@ -23,11 +23,15 @@ func Create() {
 	users := parseUsernames(userNames)
 	copsnamespace := renderTemplate(namespaceName, users)
 
-	kubernetes.ApplyString(copsnamespace)
+	_, err := kubernetes.ApplyString(copsnamespace)
+
+	if err != nil {
+		panic("Apply failed: " + err.Error())
+	}
 
 	ensureNamespaceAccess(namespaceName)
 
-	logging.LogSuccessf("Cops namespace %s successfully created\n", namespaceName)
+	logging.Infof("Cops namespace %s successfully created", namespaceName)
 }
 
 // AddUsers adds the given users to the clusters
@@ -36,7 +40,12 @@ func AddUsers() {
 	users := viper.GetString("users")
 
 	newUsers := parseUsernames(users)
-	namespace := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+
+	if err != nil {
+		panic("Could not get the cops namespace " + err.Error())
+	}
+
 	relevantUsers := namespace.Spec.NamespaceAdminUsers
 
 	addedUserCount := 0
@@ -58,9 +67,14 @@ func AddUsers() {
 	}
 
 	copsnamespace := renderTemplate(namespaceName, relevantUsers)
-	kubernetes.ApplyString(copsnamespace)
 
-	logging.LogSuccessf("%d user(s) have been successfully added to %s namespace\n", addedUserCount, namespaceName)
+	_, err = kubernetes.ApplyString(copsnamespace)
+
+	if err != nil {
+		panic("Apply failed: " + err.Error())
+	}
+
+	logging.Infof("%d user(s) have been successfully added to %s namespace", addedUserCount, namespaceName)
 }
 
 // RemoveUsers removes the given users from the clusters
@@ -69,7 +83,12 @@ func RemoveUsers() {
 	users := viper.GetString("users")
 
 	usersToRemove := parseUsernames(users)
-	namespace := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+
+	if err != nil {
+		panic("Could not get the cops namespace " + err.Error())
+	}
+
 	existingUsers := namespace.Spec.NamespaceAdminUsers
 	var relevantUsers []string
 
@@ -92,15 +111,25 @@ func RemoveUsers() {
 	}
 
 	copsnamespace := renderTemplate(namespaceName, relevantUsers)
-	kubernetes.ApplyString(copsnamespace)
 
-	logging.LogSuccessf("%d user(s) have been successfully removed from %s namespace\n", removedUserCount, namespaceName)
+	_, err = kubernetes.ApplyString(copsnamespace)
+
+	if err != nil {
+		panic("Apply failed: " + err.Error())
+	}
+
+	logging.Infof("%d user(s) have been successfully removed from %s namespace", removedUserCount, namespaceName)
 }
 
 // ListUsers prints the current users of the given namespace
 func ListUsers() {
 	namespaceName := viper.GetString("name")
-	namespace := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+
+	if err != nil {
+		panic("Could not get the cops namespace " + err.Error())
+	}
+
 	users := namespace.Spec.NamespaceAdminUsers
 
 	log.Println("Current users in namespace " + namespaceName + ":")
@@ -139,13 +168,15 @@ func renderUsernames(userNames []string) string {
 
 func ensureNamespaceAccess(namespace string) {
 	status := false
-	for i := 0; i < 10; i++ {
+
+	for i := 0; i < 20; i++ {
 		status = kubernetes.CanIGetPods(namespace)
 		if status == true {
 			break
 		}
-		time.Sleep(5 * time.Second)
+		time.Sleep(3 * time.Second)
 	}
+
 	if status == false {
 		panic("Could not verify access to pods in created namespace.")
 	}

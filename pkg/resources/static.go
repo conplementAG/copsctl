@@ -2437,18 +2437,6 @@ yiutXN3qfc1qWFh5utV3+kegI7r43Gn/EwAA//+ooaoZDhQAAA==
 		isDir: true,
 	},
 
-	"/vendor/github.com/fatih": {
-		name:  "fatih",
-		local: `../../vendor/github.com/fatih`,
-		isDir: true,
-	},
-
-	"/vendor/github.com/fatih/color": {
-		name:  "color",
-		local: `../../vendor/github.com/fatih/color`,
-		isDir: true,
-	},
-
 	"/vendor/github.com/fsnotify": {
 		name:  "fsnotify",
 		local: `../../vendor/github.com/fsnotify`,
@@ -3089,10 +3077,6 @@ var _escDirs = map[string][]os.FileInfo{
 	"../../vendor/github.com/briandowns": {},
 
 	"../../vendor/github.com/briandowns/spinner": {},
-
-	"../../vendor/github.com/fatih": {},
-
-	"../../vendor/github.com/fatih/color": {},
 
 	"../../vendor/github.com/fsnotify": {},
 

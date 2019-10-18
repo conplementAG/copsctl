@@ -5,3 +5,4 @@ cmd/copsctl/dist
 vendor
 .vscode
 .generated
+cmd/copsctl/copsctl
