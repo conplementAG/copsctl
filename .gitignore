@@ -6,3 +6,5 @@ vendor
 .vscode
 .generated
 cmd/copsctl/copsctl
+
+cmd/copsctl/logs\.log

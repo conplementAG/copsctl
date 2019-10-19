@@ -1,7 +1,6 @@
 package namespace
 
 import (
-	"log"
 	"strings"
 	"time"
 
@@ -132,10 +131,10 @@ func ListUsers() {
 
 	users := namespace.Spec.NamespaceAdminUsers
 
-	log.Println("Current users in namespace " + namespaceName + ":")
+	logging.Info("Current users in namespace " + namespaceName + ":")
 
 	for _, user := range users {
-		log.Println(" - " + user)
+		logging.Info(" - " + user)
 	}
 }
 
