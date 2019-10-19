@@ -41,7 +41,7 @@ func Initialize() {
 		TimestampFormat: time.RFC822,
 	})
 
-	file, err := os.OpenFile("logs.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
+	file, err := os.OpenFile("copsctl.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
 
 	if err != nil {
 		panic(err)
