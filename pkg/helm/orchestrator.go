@@ -14,22 +14,38 @@ func Init() {
 	namespace := viper.GetString("namespace")
 
 	roleTemplate := renderTemplate(namespace)
-	kubernetes.ApplyString(roleTemplate)
+	_, err := kubernetes.ApplyString(roleTemplate)
 
-	helm.InitHelm("tiller-account", namespace)
+	if err != nil {
+		panic("Apply failed: " + err.Error())
+	}
 
-	logging.LogSuccess("helm successfully initialized")
+	_, err = helm.InitHelm("tiller-account", namespace)
+
+	if err != nil {
+		panic("Helm init failed: " + err.Error())
+	}
+
+	logging.Info("helm successfully initialized")
 }
 
 func Delete() {
 	namespace := viper.GetString("namespace")
 
-	kubernetes.DeleteDeployment("tiller-deploy", namespace)
+	err := kubernetes.DeleteDeployment("tiller-deploy", namespace)
+
+	if err != nil {
+		panic("Deleting tiller deployment failed: " + err.Error())
+	}
 
 	roleTemplate := renderTemplate(namespace)
-	kubernetes.DeleteString(roleTemplate)
+	_, err = kubernetes.DeleteString(roleTemplate)
 
-	logging.LogSuccess("helm successfully removed")
+	if err != nil {
+		panic("Deleting role template failed: " + err.Error())
+	}
+
+	logging.Info("helm successfully removed")
 }
 
 func renderTemplate(namespace string) string {

@@ -3,14 +3,15 @@ package main
 //go:generate esc -o ../../pkg/resources/static.go -pkg resources -include=\\*.yaml ../..
 
 import (
-	"log"
 	"os"
 
-	"github.com/fatih/color"
+	"github.com/conplementAG/copsctl/pkg/common/logging"
 )
 
 func main() {
+	defer logging.Dispose()
 	defer errorhandler()
+
 	Execute()
 }
 
@@ -19,9 +20,7 @@ func errorhandler() {
 	// since they are unrecoverable and need some user intervention (or they are genuine panic programming
 	// errors)
 	if r := recover(); r != nil {
-		color.Set(color.FgHiRed)
-		log.Printf("copctl --- error occured: %+v\n", r)
-		color.Unset()
+		logging.Errorf("copctl --- error occured: %+v\n", r)
 		os.Exit(1)
 	}
 }

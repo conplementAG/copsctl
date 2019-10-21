@@ -1,7 +1,6 @@
 package connection
 
 import (
-	"log"
 	"strings"
 
 	"github.com/conplementAG/copsctl/pkg/adapters/kubernetes"
@@ -13,7 +12,12 @@ import (
 func Connect() {
 	environmentTag := viper.GetString("environment-tag")
 
-	config := kubernetes.GetCurrentConfig()
+	config, err := kubernetes.GetCurrentConfig()
+
+	if err != nil {
+		panic("Could not get the current config " + err.Error())
+	}
+
 	selectedContext := ""
 	if len(config.Contexts) > 0 {
 		for _, context := range config.Contexts {
@@ -27,9 +31,9 @@ func Connect() {
 	}
 
 	if selectedContext != "" {
-		log.Printf("Connecting to cluster context: %s\n", selectedContext)
+		logging.Infof("Connecting to cluster context: %s\n", selectedContext)
 		kubernetes.UseContext(selectedContext)
-		logging.LogSuccess("kubectl successfully setup")
+		logging.Info("kubectl successfully setup")
 	} else {
 		panic("Could not find a proper context in your .kube/config")
 	}

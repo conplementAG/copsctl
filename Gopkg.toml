@@ -30,10 +30,6 @@
   version = "1.6.0"
 
 [[constraint]]
-  name = "github.com/fatih/color"
-  version = "1.7.0"
-
-[[constraint]]
   name = "github.com/rs/xid"
   version = "1.2.1"
 
