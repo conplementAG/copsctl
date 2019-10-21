@@ -85,7 +85,9 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 
 	masterPlaneFqdn, err := kubernetes.GetCurrentMasterPlaneFqdn()
 
-	panic("Could not get the master plane fqdn " + err.Error())
+	if err != nil {
+		panic("Could not get the master plane fqdn " + err.Error())
+	}
 
 	// now we can create the endpoint (aka. service connection / service endpoint)
 	azuredevops.CreateServiceEndpoint(
