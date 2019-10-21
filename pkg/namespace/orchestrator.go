@@ -33,6 +33,29 @@ func Create() {
 	logging.Infof("Cops namespace %s successfully created", namespaceName)
 }
 
+// Delete deletes a CopsNamespace Custom-Resource-Definition with the given name
+func Delete() {
+	namespaceName := viper.GetString("name")
+
+	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+
+	if err != nil {
+		logging.Infof("Cops namespace %s does not exist", namespaceName)
+		return
+	}
+
+	relevantUsers := namespace.Spec.NamespaceAdminUsers
+	copsnamespace := renderTemplate(namespaceName, relevantUsers)
+
+	_, error := kubernetes.DeleteString(copsnamespace)
+
+	if error != nil {
+		panic("Deleting copsnamespace failed: " + err.Error())
+	}
+
+	logging.Infof("Cops namespace %s successfully deleted", namespaceName)
+}
+
 // AddUsers adds the given users to the clusters
 func AddUsers() {
 	namespaceName := viper.GetString("name")

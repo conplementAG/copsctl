@@ -25,6 +25,7 @@ func createNamespaceCommand() *cobra.Command {
 
 	command.AddCommand(createNamespaceListCommand())
 	command.AddCommand(createNamespaceCreateCommand())
+	command.AddCommand(createNamespaceDeleteCommand())
 	command.AddCommand(createNamespaceUsersCommand())
 
 	return command
@@ -62,6 +63,25 @@ func createNamespaceCreateCommand() *cobra.Command {
 
 	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin users of the namespace. Must be identical to Azure AD (case-sensitive). You can specify multiple users separated by comma.")
 	command.MarkPersistentFlagRequired("users")
+	return command
+}
+
+func createNamespaceDeleteCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "delete",
+		Short: "Delete a new namespace",
+		Long:  "Use this command to delete existing copsnamespace.",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			namespace.Delete()
+		},
+	}
+
+	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
+	command.MarkPersistentFlagRequired("name")
+
 	return command
 }
 
