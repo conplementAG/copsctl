@@ -8,7 +8,7 @@ copsctl - the Conplement AG Kubernetes developer tooling
 
 ## Requirements
 - [Helm V2.9.1](https://helm.sh/)
-- [kubectl V1.10.11](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [kubectl V1.12.2](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## Installation
 
