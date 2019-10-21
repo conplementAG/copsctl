@@ -30,6 +30,7 @@ func Initialize() {
 
 	consoleLogger.SetFormatter(&prefixed.TextFormatter{
 		ForceColors:     true,
+		ForceFormatting: true,
 		FullTimestamp:   true,
 		TimestampFormat: time.RFC822,
 	})
