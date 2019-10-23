@@ -5,6 +5,6 @@ import (
 )
 
 func InitHelm(serviceAccount string, namespace string) (string, error) {
-	command := "helm init --service-account " + serviceAccount + " --tiller-namespace " + namespace
-	return commands.ExecuteCommand(commands.Create(command))
+	command := "helm init --wait --upgrade --service-account " + serviceAccount + " --tiller-namespace " + namespace
+	return commands.ExecuteCommandLongRunning(commands.Create(command))
 }
