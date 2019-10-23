@@ -34,7 +34,7 @@ func createNamespaceCommand() *cobra.Command {
 func createNamespaceListCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "list",
-		Short: "lists all the CoreOps namespaces",
+		Short: "Lists all the CoreOps namespaces",
 		Long:  "Use this list all the CoreOps namespaces inside this cluster.",
 		Run: func(cmd *cobra.Command, args []string) {
 			namespace.List()
@@ -48,7 +48,9 @@ func createNamespaceCreateCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "create",
 		Short: "Create a new namespace",
-		Long:  "Use this command to create a new k8s namespace.",
+		Long: "Use this command to create a new k8s namespace. This command is idempotent, " +
+			"which means you can use it multiple times to ensure that the namespace is there, " +
+			"as well as all other users.",
 		PreRun: func(cmd *cobra.Command, args []string) {
 			viper.BindPFlag("users", cmd.Flags().Lookup("users"))
 			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
@@ -61,7 +63,9 @@ func createNamespaceCreateCommand() *cobra.Command {
 	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
 	command.MarkPersistentFlagRequired("name")
 
-	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin users of the namespace. Must be identical to Azure AD (case-sensitive). You can specify multiple users separated by comma.")
+	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin "+
+		"users of the namespace. Must be identical to Azure AD (case-sensitive). "+
+		"You can specify multiple users separated by comma.")
 	command.MarkPersistentFlagRequired("users")
 	return command
 }
@@ -69,7 +73,7 @@ func createNamespaceCreateCommand() *cobra.Command {
 func createNamespaceDeleteCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "delete",
-		Short: "Delete a new namespace",
+		Short: "Delete an existing namespace",
 		Long:  "Use this command to delete existing copsnamespace.",
 		PreRun: func(cmd *cobra.Command, args []string) {
 			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
@@ -88,7 +92,7 @@ func createNamespaceDeleteCommand() *cobra.Command {
 func createNamespaceUsersCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "users",
-		Short: "Mange users of a namespace",
+		Short: "Manage users of a namespace",
 		Long:  "Use this command to mange the users in an existing k8s namespace.",
 		Run: func(cmd *cobra.Command, args []string) {
 			// since "namespace" is not really a command, but rather a group of commands, we
@@ -124,7 +128,9 @@ func createNamespaceUsersAddCommand() *cobra.Command {
 		},
 	}
 
-	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the users that you want to add. Must be identical to Azure AD (case-sensitive). You can specify multiple users separated by comma.")
+	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the users that you want "+
+		"to add. Must be identical to Azure AD (case-sensitive). "+
+		"You can specify multiple users separated by comma.")
 	command.MarkPersistentFlagRequired("users")
 	return command
 }
@@ -143,7 +149,9 @@ func createNamespaceUsersRemoveCommand() *cobra.Command {
 		},
 	}
 
-	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the users that you want to remove from the namespace. Must be identical to Azure AD (case-sensitive). You can specify multiple users separated by comma.")
+	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the users that "+
+		"you want to remove from the namespace. Must be identical to Azure AD (case-sensitive). "+
+		"You can specify multiple users separated by comma.")
 	command.MarkPersistentFlagRequired("users")
 	return command
 }
