@@ -2,7 +2,6 @@ package fileprocessing
 
 import (
 	"io/ioutil"
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -56,39 +55,6 @@ func InterpolateStaticFiles(inputPath string, variables map[string]string) strin
 	}
 
 	return uniqueOutputFolder
-}
-
-// InterpolateFiles loads all the files in given path,
-// replaces the variables based on the given dictionary,
-// and returns the path to the generated directory where the results are stored
-func InterpolateFiles(inputPath string, variables map[string]string) string {
-	files, err := ioutil.ReadDir(inputPath)
-	uniqueOutputFolder := createUniqueDirectory()
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	for _, f := range files {
-		fileContents := ReadFileIntoString(filepath.Join(inputPath, f.Name()))
-
-		for key, value := range variables {
-			fileContents = strings.Replace(fileContents, key, value, -1)
-		}
-
-		err := ioutil.WriteFile(filepath.Join(uniqueOutputFolder, f.Name()), []byte(fileContents), 0644)
-		panicOnError(err)
-	}
-
-	return uniqueOutputFolder
-}
-
-// ReadFileIntoString reads the given file (path) and returns a deserialized string
-func ReadFileIntoString(filePath string) string {
-	file, err := ioutil.ReadFile(filePath)
-	panicOnError(err)
-
-	return string(file)
 }
 
 func panicOnError(err interface{}) {
