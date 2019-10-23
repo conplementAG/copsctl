@@ -6,6 +6,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	lumberjack "gopkg.in/natefinch/lumberjack.v2"
 
 	colorable "github.com/mattn/go-colorable"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
@@ -42,14 +43,14 @@ func Initialize() {
 		TimestampFormat: time.RFC822,
 	})
 
-	file, err := os.OpenFile("copsctl.log", os.O_WRONLY|os.O_CREATE|os.O_APPEND, 0755)
-
-	if err != nil {
-		panic(err)
+	fileLog := &lumberjack.Logger{
+		Filename:   "copsctl.log",
+		MaxSize:    10,
+		MaxBackups: 10,
+		LocalTime:  true,
 	}
-
 	consoleLogger.SetOutput(colorable.NewColorableStdout())
-	fileLogger.SetOutput(file)
+	fileLogger.SetOutput(fileLog)
 }
 
 func Dispose() {

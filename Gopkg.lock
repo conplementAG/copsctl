@@ -242,6 +242,14 @@
   version = "v0.3.2"
 
 [[projects]]
+  digest = "1:c805e517269b0ba4c21ded5836019ed7d16953d4026cb7d00041d039c7906be9"
+  name = "gopkg.in/natefinch/lumberjack.v2"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "a96e63847dc3c67d17befa69c303767e2f84e54f"
+  version = "v2.1"
+
+[[projects]]
   digest = "1:59f10c1537d2199d9115d946927fe31165959a95190849c82ff11e05803528b0"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
@@ -263,6 +271,7 @@
     "github.com/spf13/cobra",
     "github.com/spf13/viper",
     "github.com/x-cray/logrus-prefixed-formatter",
+    "gopkg.in/natefinch/lumberjack.v2",
     "gopkg.in/yaml.v2",
   ]
   solver-name = "gps-cdcl"
