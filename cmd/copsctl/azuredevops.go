@@ -63,6 +63,7 @@ func createAzureDevopsCreateEndpointCommand() *cobra.Command {
 		Short: "Connect the Azure DevOps account to the current Kubernetes cluster.",
 		Long: `
 Use this command to provision a service account which will be used to create a service endpoint in the Azure DevOps project.
+This command is idempotent.
 		`,
 		Run: func(cmd *cobra.Command, args []string) {
 			azuredevops.NewOrchestrator().ConfigureEndpoint()
