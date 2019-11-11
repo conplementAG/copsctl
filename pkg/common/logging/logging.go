@@ -49,6 +49,7 @@ func Initialize() {
 		MaxBackups: 10,
 		LocalTime:  true,
 	}
+
 	consoleLogger.SetOutput(colorable.NewColorableStdout())
 	fileLogger.SetOutput(fileLog)
 }

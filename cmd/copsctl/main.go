@@ -20,7 +20,7 @@ func errorhandler() {
 	// since they are unrecoverable and need some user intervention (or they are genuine panic programming
 	// errors)
 	if r := recover(); r != nil {
-		logging.Errorf("copctl --- error occured: %+v\n", r)
+		logging.Errorf("copsctl --- error occured: %+v\n", r)
 		os.Exit(1)
 	}
 }
