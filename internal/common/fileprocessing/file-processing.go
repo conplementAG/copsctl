@@ -6,7 +6,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/conplementAg/copsctl/pkg/resources"
+	"github.com/conplementAG/copsctl/internal/resources"
 	"github.com/rs/xid"
 )
 

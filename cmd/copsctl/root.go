@@ -4,7 +4,7 @@ import (
 	"os"
 	"strings"
 
-	"github.com/conplementAG/copsctl/pkg/common/logging"
+	"github.com/conplementAG/copsctl/internal/common/logging"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -22,10 +22,10 @@ var rootCmd = &cobra.Command{
      \___\___/| .__/|___/\___|\__|_|
               |_|                       by Conplement AG
 	
-	Version 0.1.5
+	Version 0.2.0
     `,
 
-	Version: "0.1.5",
+	Version: "0.2.0",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.

@@ -263,7 +263,7 @@
   input-imports = [
     "github.com/ahmetb/go-linq",
     "github.com/briandowns/spinner",
-    "github.com/conplementAg/copsctl/pkg/resources",
+    "github.com/conplementAg/copsctl/internal/resources",
     "github.com/imroc/req",
     "github.com/mattn/go-colorable",
     "github.com/rs/xid",

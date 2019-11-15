@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/conplementAG/copsctl/pkg/connection"
+	"github.com/conplementAG/copsctl/internal/connection"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

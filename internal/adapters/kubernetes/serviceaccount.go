@@ -1,7 +1,7 @@
 package kubernetes
 
 import (
-	"github.com/conplementAG/copsctl/pkg/common/commands"
+	"github.com/conplementAG/copsctl/internal/common/commands"
 	yaml "gopkg.in/yaml.v2"
 )
 

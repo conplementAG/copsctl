@@ -5,7 +5,7 @@ package main
 import (
 	"os"
 
-	"github.com/conplementAG/copsctl/pkg/common/logging"
+	"github.com/conplementAG/copsctl/internal/common/logging"
 )
 
 func main() {

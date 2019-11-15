@@ -5,9 +5,9 @@ import (
 	"strings"
 
 	"github.com/ahmetb/go-linq"
-	"github.com/conplementAG/copsctl/pkg/common/commands"
-	"github.com/conplementAG/copsctl/pkg/common/fileprocessing"
-	"github.com/conplementAG/copsctl/pkg/common/logging"
+	"github.com/conplementAG/copsctl/internal/common/commands"
+	"github.com/conplementAG/copsctl/internal/common/fileprocessing"
+	"github.com/conplementAG/copsctl/internal/common/logging"
 )
 
 func UseContext(contextName string) error {

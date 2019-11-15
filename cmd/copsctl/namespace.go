@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/conplementAG/copsctl/pkg/namespace"
+	"github.com/conplementAG/copsctl/internal/namespace"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -27,6 +27,7 @@ func createNamespaceCommand() *cobra.Command {
 	command.AddCommand(createNamespaceCreateCommand())
 	command.AddCommand(createNamespaceDeleteCommand())
 	command.AddCommand(createNamespaceUsersCommand())
+	command.AddCommand(createNamespaceServiceAccountsCommand())
 
 	return command
 }
@@ -53,6 +54,7 @@ func createNamespaceCreateCommand() *cobra.Command {
 			"as well as all other users.",
 		PreRun: func(cmd *cobra.Command, args []string) {
 			viper.BindPFlag("users", cmd.Flags().Lookup("users"))
+			viper.BindPFlag("service-accounts", cmd.Flags().Lookup("service-accounts"))
 			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
 		},
 		Run: func(cmd *cobra.Command, args []string) {
@@ -63,10 +65,11 @@ func createNamespaceCreateCommand() *cobra.Command {
 	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
 	command.MarkPersistentFlagRequired("name")
 
-	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin "+
-		"users of the namespace. Must be identical to Azure AD (case-sensitive). "+
-		"You can specify multiple users separated by comma.")
+	addUsersPersistentFlag(command)
 	command.MarkPersistentFlagRequired("users")
+
+	addServiceAccountsPersistentFlag(command)
+
 	return command
 }
 
@@ -93,10 +96,8 @@ func createNamespaceUsersCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "users",
 		Short: "Manage users of a namespace",
-		Long:  "Use this command to mange the users in an existing k8s namespace.",
+		Long:  "Use this command to manage the users in an existing k8s namespace.",
 		Run: func(cmd *cobra.Command, args []string) {
-			// since "namespace" is not really a command, but rather a group of commands, we
-			// show the help for the command group instead
 			if len(args) == 0 {
 				cmd.Help()
 				os.Exit(0)
@@ -128,9 +129,7 @@ func createNamespaceUsersAddCommand() *cobra.Command {
 		},
 	}
 
-	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the users that you want "+
-		"to add. Must be identical to Azure AD (case-sensitive). "+
-		"You can specify multiple users separated by comma.")
+	addUsersPersistentFlag(command)
 	command.MarkPersistentFlagRequired("users")
 	return command
 }
@@ -149,9 +148,7 @@ func createNamespaceUsersRemoveCommand() *cobra.Command {
 		},
 	}
 
-	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the users that "+
-		"you want to remove from the namespace. Must be identical to Azure AD (case-sensitive). "+
-		"You can specify multiple users separated by comma.")
+	addUsersPersistentFlag(command)
 	command.MarkPersistentFlagRequired("users")
 	return command
 }
@@ -169,4 +166,92 @@ func createNamespaceUsersListCommand() *cobra.Command {
 		},
 	}
 	return command
+}
+
+func createNamespaceServiceAccountsCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "service-accounts",
+		Short: "Manage service accounts of a namespace",
+		Long:  "Use this command to manage the service accounts in an existing k8s namespace.",
+		Run: func(cmd *cobra.Command, args []string) {
+			if len(args) == 0 {
+				cmd.Help()
+				os.Exit(0)
+			}
+		},
+	}
+
+	command.PersistentFlags().StringP("name", "n", "", "Name of the namespace")
+	command.MarkPersistentFlagRequired("name")
+
+	command.AddCommand(createNamespaceServiceAccountsAddCommand())
+	command.AddCommand(createNamespaceServiceAccountsRemoveCommand())
+	command.AddCommand(createNamespaceServiceAccountsListCommand())
+
+	return command
+}
+
+func createNamespaceServiceAccountsAddCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "add",
+		Short: "Adds service accounts to the namespace",
+		Long:  "Use this command to add service accounts to an existing k8s namespace.",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("service-accounts", cmd.Flags().Lookup("service-accounts"))
+			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			namespace.AddServiceAccounts()
+		},
+	}
+
+	addServiceAccountsPersistentFlag(command)
+	command.MarkPersistentFlagRequired("service-accounts")
+	return command
+}
+
+func createNamespaceServiceAccountsRemoveCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "remove",
+		Short: "Removes users from a namespace",
+		Long:  "Use this command to remove service-accounts from an existing k8s namespace.",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("service-accounts", cmd.Flags().Lookup("service-accounts"))
+			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			namespace.RemoveServiceAccounts()
+		},
+	}
+
+	addServiceAccountsPersistentFlag(command)
+	command.MarkPersistentFlagRequired("service-accounts")
+	return command
+}
+
+func createNamespaceServiceAccountsListCommand() *cobra.Command {
+	var command = &cobra.Command{
+		Use:   "list",
+		Short: "List service-accounts of a namespace",
+		Long:  "Use this command to list service-accounts of an existing k8s namespace.",
+		PreRun: func(cmd *cobra.Command, args []string) {
+			viper.BindPFlag("name", cmd.Flags().Lookup("name"))
+		},
+		Run: func(cmd *cobra.Command, args []string) {
+			namespace.ListServiceAccounts()
+		},
+	}
+	return command
+}
+
+func addUsersPersistentFlag(command *cobra.Command) {
+	command.PersistentFlags().StringP("users", "u", "", "The email-addresses of the admin "+
+		"users of the namespace. Must be identical to Azure AD (case-sensitive). "+
+		"You can specify multiple users separated by commas.")
+}
+
+func addServiceAccountsPersistentFlag(command *cobra.Command) {
+	command.PersistentFlags().StringP("service-accounts", "s", "", "Optionally, you can specify service accounts "+
+		"which will be granted idential access level like the users. Each service accounts has to be in "+
+		"the format accountname.namespace, and multiple accounts can be specified separated by commas.")
 }
