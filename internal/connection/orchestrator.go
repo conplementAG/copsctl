@@ -3,8 +3,8 @@ package connection
 import (
 	"strings"
 
-	"github.com/conplementAG/copsctl/pkg/adapters/kubernetes"
-	"github.com/conplementAG/copsctl/pkg/common/logging"
+	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
+	"github.com/conplementAG/copsctl/internal/common/logging"
 	"github.com/spf13/viper"
 )
 

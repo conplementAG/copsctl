@@ -1,7 +1,7 @@
 package helm
 
 import (
-	"github.com/conplementAG/copsctl/pkg/common/commands"
+	"github.com/conplementAG/copsctl/internal/common/commands"
 )
 
 func InitHelm(serviceAccount string, namespace string) (string, error) {

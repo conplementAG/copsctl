@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/conplementAG/copsctl/pkg/helm"
+	"github.com/conplementAG/copsctl/internal/helm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

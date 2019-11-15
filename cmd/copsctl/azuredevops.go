@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/conplementAG/copsctl/pkg/azuredevops"
+	"github.com/conplementAG/copsctl/internal/azuredevops"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

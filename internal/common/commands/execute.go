@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/briandowns/spinner"
-	"github.com/conplementAG/copsctl/pkg/common/logging"
+	"github.com/conplementAG/copsctl/internal/common/logging"
 )
 
 // ExecuteCommandLongRunning runs the given command and starts
