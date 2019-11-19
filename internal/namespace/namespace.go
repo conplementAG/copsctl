@@ -27,7 +27,7 @@ func Create() {
 
 	ensureNamespaceAccess(namespaceName)
 
-	logging.Infof("Cops namespace %s successfully created", namespaceName)
+	logging.Infof("Cops namespace %s successfully created / updated.", namespaceName)
 }
 
 func Delete() {
