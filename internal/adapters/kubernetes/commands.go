@@ -60,7 +60,7 @@ func Apply(filepath string) (string, error) {
 }
 
 func Delete(filepath string) (string, error) {
-	command := "kubectl delete -f " + filepath
+	command := "kubectl delete --wait -f " + filepath
 	return commands.ExecuteCommandLongRunning(commands.Create(command))
 }
 

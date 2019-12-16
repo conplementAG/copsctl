@@ -9,27 +9,28 @@ import (
 )
 
 func parseServiceAccounts(rawAccounts string) []kubernetes.CopsServiceAccount {
-	var parsedAccounts []kubernetes.CopsServiceAccount
-	accounts := strings.Split(rawAccounts, ",")
+	parsedAccounts := make([]kubernetes.CopsServiceAccount, 0)
 
-	logging.Info(rawAccounts)
+	if rawAccounts != "" {
+		accounts := strings.Split(rawAccounts, ",")
 
-	for _, account := range accounts {
-		if !strings.Contains(account, ".") {
-			panic("Service accounts should contain dot (.) separated service account(s) (e.g. accountname.namespace). " +
-				"Input value: " + account)
+		for _, account := range accounts {
+			if !strings.Contains(account, ".") {
+				panic("Service accounts should contain dot (.) separated service account(s) (e.g. accountname.namespace). " +
+					"Input value: " + account)
+			}
+
+			splitAccount := strings.Split(account, ".")
+
+			if len(splitAccount) != 2 || splitAccount[0] == "" || splitAccount[1] == "" {
+				panic("Service account not in the expected format: " + account)
+			}
+
+			parsedAccounts = append(parsedAccounts, kubernetes.CopsServiceAccount{
+				ServiceAccount: splitAccount[0],
+				Namespace:      splitAccount[1],
+			})
 		}
-
-		splitAccount := strings.Split(account, ".")
-
-		if len(splitAccount) != 2 || splitAccount[0] == "" || splitAccount[1] == "" {
-			panic("Service account not in the expected format: " + account)
-		}
-
-		parsedAccounts = append(parsedAccounts, kubernetes.CopsServiceAccount{
-			ServiceAccount: splitAccount[0],
-			Namespace:      splitAccount[1],
-		})
 	}
 
 	return parsedAccounts
