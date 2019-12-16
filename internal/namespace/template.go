@@ -10,11 +10,15 @@ func renderUsernames(userNames []string) string {
 	userlist := ""
 	length := len(userNames)
 
-	for index, userName := range userNames {
-		userlist += "  - " + userName
+	if len(userNames) > 0 {
+		userlist += "  namespaceAdminUsers:\n"
 
-		if index != (length - 1) {
-			userlist += "\n"
+		for index, userName := range userNames {
+			userlist += "  - " + userName
+
+			if index != (length - 1) {
+				userlist += "\n"
+			}
 		}
 	}
 
@@ -25,12 +29,16 @@ func renderServiceAccounts(serviceAccounts []kubernetes.CopsServiceAccount) stri
 	accountsList := ""
 	length := len(serviceAccounts)
 
-	for index, account := range serviceAccounts {
-		accountsList += "  - serviceAccount: " + account.ServiceAccount + "\n"
-		accountsList += "    namespace: " + account.Namespace
+	if len(accountsList) > 0 {
+		accountsList += "  namespaceAdminServiceAccounts:\n"
 
-		if index != (length - 1) {
-			accountsList += "\n"
+		for index, account := range serviceAccounts {
+			accountsList += "  - serviceAccount: " + account.ServiceAccount + "\n"
+			accountsList += "    namespace: " + account.Namespace
+
+			if index != (length - 1) {
+				accountsList += "\n"
+			}
 		}
 	}
 
@@ -50,7 +58,5 @@ kind: CopsNamespace
 metadata:
   name: {{ namespaceName }}
 spec:
-  namespaceAdminUsers:
 {{ usernames }}
-  namespaceAdminServiceAccounts:
 {{ serviceAccounts }}`
