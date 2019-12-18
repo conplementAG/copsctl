@@ -27,16 +27,15 @@ func renderUsernames(userNames []string) string {
 
 func renderServiceAccounts(serviceAccounts []kubernetes.CopsServiceAccount) string {
 	accountsList := ""
-	length := len(serviceAccounts)
 
-	if len(accountsList) > 0 {
+	if len(serviceAccounts) > 0 {
 		accountsList += "  namespaceAdminServiceAccounts:\n"
 
 		for index, account := range serviceAccounts {
 			accountsList += "  - serviceAccount: " + account.ServiceAccount + "\n"
 			accountsList += "    namespace: " + account.Namespace
 
-			if index != (length - 1) {
+			if index != (len(serviceAccounts) - 1) {
 				accountsList += "\n"
 			}
 		}
