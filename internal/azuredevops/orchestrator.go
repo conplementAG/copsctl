@@ -111,7 +111,7 @@ func (orchestrator *AzureDevopsOrchestrator) prepareRbacFiles() string {
 
 func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 	return fileprocessing.InterpolateStaticFiles(
-		"pkg/azuredevops/global",
+		"internal/azuredevops/global",
 		map[string]string{
 			"{{NAMESPACE}}":       "kube-system",
 			"{{ROLE_NAME}}":       orchestrator.roleName,
@@ -122,7 +122,7 @@ func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 
 func (orchestrator *AzureDevopsOrchestrator) prepareScopedRbacFiles() string {
 	return fileprocessing.InterpolateStaticFiles(
-		"pkg/azuredevops/scoped",
+		"internal/azuredevops/scoped",
 		map[string]string{
 			"{{NAMESPACE}}":       orchestrator.Namespace,
 			"{{ROLE_NAME}}":       orchestrator.roleName,
