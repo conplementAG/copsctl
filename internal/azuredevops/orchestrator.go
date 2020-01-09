@@ -3,6 +3,8 @@ package azuredevops
 import (
 	"strings"
 
+	"net/url"
+
 	"github.com/conplementAG/copsctl/internal/adapters/azuredevops"
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
 	"github.com/conplementAG/copsctl/internal/common/fileprocessing"
@@ -43,12 +45,17 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 		Namespace:    namespace,
 
 		globalScope:        isGlobalScope,
-		serviceAccountName: strings.ToLower(organization) + "-" + strings.ToLower(project) + "-azuredevops-account",
-		roleName:           strings.ToLower(organization) + "-" + strings.ToLower(project) + "-" + namespace + "-azuredevops-role",
+		serviceAccountName: strings.ToLower(urlDecoding(organization)) + "-" + strings.ToLower(urlDecoding(project)) + "-azuredevops-account",
+		roleName:           strings.ToLower(urlDecoding(organization)) + "-" + strings.ToLower(urlDecoding(project)) + "-" + namespace + "-azuredevops-role",
 		endpointName:       environmentTag + "-" + namespace,
 		username:           username,
 		accesstoken:        accesstoken,
 	}
+}
+
+func urlDecoding(source string) string {
+	decoded, _ := url.QueryUnescape(source)
+	return strings.Replace(decoded, " ", "", -1)
 }
 
 func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {

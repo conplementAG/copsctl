@@ -18,14 +18,6 @@
   version = "v1.7.0"
 
 [[projects]]
-  digest = "1:0b9a44225ac58936f5c01269c908933ff64edfb98ce5e30b7850383d281bd029"
-  name = "github.com/conplementAg/copsctl"
-  packages = ["pkg/resources"]
-  pruneopts = "UT"
-  revision = "70d2c41f13c12b4df0a51a9d3f8c2aa922bb9ae3"
-  version = "v0.1.3"
-
-[[projects]]
   digest = "1:865079840386857c809b72ce300be7580cb50d3d3129ce11bf9aa6ca2bc1934a"
   name = "github.com/fatih/color"
   packages = ["."]
@@ -263,7 +255,6 @@
   input-imports = [
     "github.com/ahmetb/go-linq",
     "github.com/briandowns/spinner",
-    "github.com/conplementAg/copsctl/internal/resources",
     "github.com/imroc/req",
     "github.com/mattn/go-colorable",
     "github.com/rs/xid",
