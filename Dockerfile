@@ -39,6 +39,6 @@ RUN go test ./... --cover
 # complex build with all platforms, optionally create Release with latest tag in GitHub as well
 WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
 ARG GITHUB_TOKEN
-RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL http://git.io/goreleaser | bash -s -- release --skip-validate --rm-dist --skip-publish --snapshot ; else curl -sL http://git.io/goreleaser | bash -s -- release --skip-validate --rm-dist ; fi
+RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL http://git.io/goreleaser | VERSION=v0.123.3 bash -s -- release --skip-validate --rm-dist --skip-publish --snapshot ; else curl -sL http://git.io/goreleaser | VERSION=v0.123.3 bash -s -- release --skip-validate --rm-dist ; fi
 
 CMD [ "/bin/bash" ]
