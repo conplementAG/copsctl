@@ -1,4 +1,4 @@
-FROM golang:latest
+FROM golang:1.12.1
 
 RUN apt-get update && \
     apt-get install lsb-release -y
