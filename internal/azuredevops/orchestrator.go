@@ -40,22 +40,26 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 	}
 
 	return &AzureDevopsOrchestrator{
-		Organization: organization,
-		Project:      project,
-		Namespace:    namespace,
+		Organization: trim(organization),
+		Project:      trim(project),
+		Namespace:    trim(namespace),
 
 		globalScope:        isGlobalScope,
-		serviceAccountName: strings.ToLower(urlDecoding(organization)) + "-" + strings.ToLower(urlDecoding(project)) + "-azuredevops-account",
-		roleName:           strings.ToLower(urlDecoding(organization)) + "-" + strings.ToLower(urlDecoding(project)) + "-" + namespace + "-azuredevops-role",
-		endpointName:       environmentTag + "-" + namespace,
-		username:           username,
-		accesstoken:        accesstoken,
+		serviceAccountName: strings.ToLower(urlDecode(organization)) + "-" + strings.ToLower(urlDecode(project)) + "-azuredevops-account",
+		roleName:           strings.ToLower(urlDecode(organization)) + "-" + strings.ToLower(urlDecode(project)) + "-" + trim(namespace) + "-azuredevops-role",
+		endpointName:       trim(environmentTag) + "-" + trim(namespace),
+		username:           trim(username),
+		accesstoken:        trim(accesstoken),
 	}
 }
 
-func urlDecoding(source string) string {
-	decoded, _ := url.QueryUnescape(source)
-	return strings.Replace(decoded, " ", "", -1)
+func urlDecode(source string) string {
+	urlDecoded, _ := url.QueryUnescape(source)
+	return trim(urlDecoded)
+}
+
+func trim(source string) string {
+	return strings.Replace(source, " ", "", -1)
 }
 
 func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
