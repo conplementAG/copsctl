@@ -1,6 +1,6 @@
 package main
 
-//go:generate esc -o ../../internal/resources/static.go -pkg resources -include=\\*.yaml ../..
+//go:generate esc -o ../../internal/resources/static.go -pkg resources -include=\\*.yaml -ignore=vendor/|.git|.generated ../..
 
 import (
 	"os"
