@@ -5,15 +5,7 @@ type ConfigResponse struct {
 	APIVersion  string `json:"apiVersion"`
 	Preferences struct {
 	} `json:"preferences"`
-	Clusters []Cluster `json:"clusters"`
-	Users    []struct {
-		Name string `json:"name"`
-		User struct {
-			ClientCertificateData string `json:"client-certificate-data"`
-			ClientKeyData         string `json:"client-key-data"`
-			Token                 string `json:"token"`
-		} `json:"user"`
-	} `json:"users"`
+	Clusters       []Cluster `json:"clusters"`
 	Contexts       []Context `json:"contexts"`
 	CurrentContext string    `json:"current-context"`
 }
@@ -29,7 +21,6 @@ type Context struct {
 type Cluster struct {
 	Name    string `json:"name"`
 	Cluster struct {
-		Server                string `json:"server"`
-		InsecureSkipTLSVerify bool   `json:"insecure-skip-tls-verify"`
+		Server string `json:"server"`
 	} `json:"cluster"`
 }
