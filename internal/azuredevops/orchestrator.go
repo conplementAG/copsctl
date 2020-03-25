@@ -125,7 +125,6 @@ func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 		"internal/azuredevops/global",
 		map[string]string{
 			"{{NAMESPACE}}":       "kube-system",
-			"{{ROLE_NAME}}":       orchestrator.roleName,
 			"{{BINDING_NAME}}":    orchestrator.roleName + "-binding",
 			"{{SERVICE_ACCOUNT}}": orchestrator.serviceAccountName,
 		})
@@ -136,7 +135,6 @@ func (orchestrator *AzureDevopsOrchestrator) prepareScopedRbacFiles() string {
 		"internal/azuredevops/scoped",
 		map[string]string{
 			"{{NAMESPACE}}":       orchestrator.Namespace,
-			"{{ROLE_NAME}}":       orchestrator.roleName,
 			"{{BINDING_NAME}}":    orchestrator.roleName + "-binding",
 			"{{SERVICE_ACCOUNT}}": orchestrator.serviceAccountName,
 		})
