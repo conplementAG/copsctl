@@ -1,7 +1,6 @@
 package main
 
 import (
-	"github.com/conplementAG/copsctl/internal/helm"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )
@@ -9,9 +8,9 @@ import (
 func createHelmCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "helm",
-		Short: "Command for managing the helm installation in Core Ops namespaces.",
+		Short: "DEPRECATED. Use helm2 command instead.",
 		Long: `
-Use this command to manage helm installation in your Core Ops namespaces.
+		DEPRECATED. Use helm2 command instead.
 		`,
 		PreRun: func(cmd *cobra.Command, args []string) {
 			viper.BindPFlag("namespace", cmd.Flags().Lookup("namespace"))
@@ -21,40 +20,8 @@ Use this command to manage helm installation in your Core Ops namespaces.
 	command.PersistentFlags().StringP("namespace", "n", "", "Namespace where you wish to manage Helm.")
 	command.MarkPersistentFlagRequired("namespace")
 
-	command.AddCommand(createHelmInitCommand())
-	command.AddCommand(createHelmDeleteCommand())
-
-	return command
-}
-
-func createHelmInitCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "init",
-		Short: "Initialize Helm",
-		Long:  "Use this command to initialize Helm in a namespace of your choice.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag("namespace", cmd.Flags().Lookup("namespace"))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			helm.Init()
-		},
-	}
-
-	return command
-}
-
-func createHelmDeleteCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "delete",
-		Short: "Remove Helm",
-		Long:  "Use this command to remove Helm from your namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag("namespace", cmd.Flags().Lookup("namespace"))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			helm.Delete()
-		},
-	}
+	command.AddCommand(createHelm2InitCommand())
+	command.AddCommand(createHelm2DeleteCommand())
 
 	return command
 }
