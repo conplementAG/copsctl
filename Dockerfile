@@ -1,4 +1,4 @@
-FROM golang:1.12.1
+FROM golang:1.13.4
 
 RUN apt-get update && \
     apt-get install lsb-release -y
@@ -13,23 +13,14 @@ RUN apt-get update && apt-get install -y kubectl
 
 RUN go version
 
-# dep package manager
-RUN curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
-
 ADD . /go/src/github.com/conplementAG/copsctl
 
 # Trigger resource embedding
 WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
 RUN go get -u github.com/mjibson/esc
 RUN go generate
-WORKDIR /go/src/github.com/conplementAG/copsctl
-
-# restore packages
-RUN dep ensure
 
 # simple build
-WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
-
 RUN go build -o copsctl .
 
 # run the tests
