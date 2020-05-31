@@ -1,24 +1,25 @@
 # Contributing Guidelines
 
-## How to get the source-code
+### How to build the tool
 
-`go get github.com/conplementAG/copsctl` will install the package into your `$GOPATH`.
+This project uses the Go modules, so make sure you use Golang > 1.13 for everything to work smoothly. 
 
-## How to build the project
+```bash
+# Clone the project 
+git clone https://github.com/conplementAG/copsctl.git
 
-### 1. Resolve all dependencies
+# Embedd resources
+go get -u github.com/mjibson/esc
+go generate .
 
-```
-cd $GOPATH/src/github.com/conplementAG/copsctl
-dep ensure -v
-```
-
-### 2. Build the tool
-
-```
-cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
+# Compile to executable
 go build .
 ```
+
+*Additional Info:*
+
+The  snippet above will put the `esc`-executable into your `$GOPATH/bin` directory, so it is available in the `go generate` phase.
+This is required because `esc` will search for `yaml-files` and embedd those into the final binary, so the executable can run idependant from any working directory.
 
 ## How to create a release
 
