@@ -16,34 +16,9 @@ Simply download a binary for your target system from [Releases](https://github.c
 
 ## Contributing
 
-For contributing to the project, and fo development instructions, please check [CONTRIBUTING.md](CONTRIBUTING.md)
+For contributing to the project, and for development instructions, please check [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Getting Started
-
-### Build the tool
-
-```bash
-# Clone the project into your %GOPATH%
-git clone https://github.com/conplementAG/copsctl.git
-# Build with go build
-cd $GOPATH/src/github.com/conplementAG/copsctl/cmd/copsctl
-
-# Embedd resources
-go get -u github.com/mjibson/esc
-go generate .
-
-# Install dependencies
-dep ensure
-
-# Compile to executable
-go build .
-```
-
-*Additional Info:*
-
-The  snippet above will put the `esc`-executable into your `$GOPATH/bin` directory, so it is available in the `go generate` phase.
-This is required because `esc` will search for `yaml-files` and embedd those into the final binary, so the executable can run idependant from any working directory.
-
 
 ### Connect to a cluster
 `copsctrl connect -e <environment-tag>`
