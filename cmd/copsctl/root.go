@@ -22,10 +22,10 @@ var rootCmd = &cobra.Command{
      \___\___/| .__/|___/\___|\__|_|
               |_|                       by Conplement AG
 	
-	Version 0.3.2
+	Version 0.4.0
     `,
 
-	Version: "0.3.2",
+	Version: "0.4.0",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
@@ -45,8 +45,6 @@ func init() {
 	rootCmd.AddCommand(createNamespaceCommand())
 	rootCmd.AddCommand(createConnectCommand())
 	rootCmd.AddCommand(createAzureDevopsCommand())
-	rootCmd.AddCommand(createHelmCommand())
-	rootCmd.AddCommand(createHelm2Command())
 
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "If set logging will be verbose")
 	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
