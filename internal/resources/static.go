@@ -293,12 +293,6 @@ zE21UqiuDnYNCvN0do13dHb2D/ULqa2FyhUXJCaDFfg5+roGBzg6u9bWAgIAAP//4dOwA2QAAAA=
 		isDir: true,
 	},
 
-	"/internal/adapters/helm": {
-		name:  "helm",
-		local: `../../internal/adapters/helm`,
-		isDir: true,
-	},
-
 	"/internal/adapters/kubernetes": {
 		name:  "kubernetes",
 		local: `../../internal/adapters/kubernetes`,
@@ -353,12 +347,6 @@ zE21UqiuDnYNCvN0do13dHb2D/ULqa2FyhUXJCaDFfg5+roGBzg6u9bWAgIAAP//4dOwA2QAAAA=
 		isDir: true,
 	},
 
-	"/internal/helm": {
-		name:  "helm",
-		local: `../../internal/helm`,
-		isDir: true,
-	},
-
 	"/internal/namespace": {
 		name:  "namespace",
 		local: `../../internal/namespace`,
@@ -392,8 +380,6 @@ var _escDirs = map[string][]os.FileInfo{
 
 	"../../internal/adapters/azuredevops": {},
 
-	"../../internal/adapters/helm": {},
-
 	"../../internal/adapters/kubernetes": {},
 
 	"../../internal/azuredevops": {},
@@ -417,8 +403,6 @@ var _escDirs = map[string][]os.FileInfo{
 	"../../internal/common/logging": {},
 
 	"../../internal/connection": {},
-
-	"../../internal/helm": {},
 
 	"../../internal/namespace": {},
 
