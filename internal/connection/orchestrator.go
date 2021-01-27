@@ -90,7 +90,7 @@ func saveKubeConfigToFile(configYaml string) {
 
 	configFilePath := filepath.Join(home, ".kube", "config")
 
-	err = ioutil.WriteFile(configFilePath, []byte(configYaml), 0644)
+	err = ioutil.WriteFile(configFilePath, []byte(configYaml), 0600)
 	panicOnError(err)
 }
 
