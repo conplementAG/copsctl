@@ -1,14 +1,15 @@
 package logging
 
 import (
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"os"
 	"time"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	lumberjack "gopkg.in/natefinch/lumberjack.v2"
+	"gopkg.in/natefinch/lumberjack.v2"
 
-	colorable "github.com/mattn/go-colorable"
+	"github.com/mattn/go-colorable"
 	prefixed "github.com/x-cray/logrus-prefixed-formatter"
 )
 
@@ -25,7 +26,7 @@ func Initialize() {
 	fileLogger.SetLevel(logrus.DebugLevel)
 	consoleLogger.SetLevel(logrus.InfoLevel)
 
-	if viper.GetBool("verbose") {
+	if viper.GetBool(flags.Verbose) {
 		consoleLogger.SetLevel(logrus.DebugLevel)
 	}
 

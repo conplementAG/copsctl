@@ -1,4 +1,4 @@
-package fileprocessing
+package file_processing
 
 import (
 	"io/ioutil"
@@ -28,7 +28,7 @@ func DeletePath(filePath string) {
 }
 
 // InterpolateStaticFiles loads all the files in given resource path.
-// E.g.: pkg/azuredevops/global
+// E.g.: internal/azure_devops/global
 // It depends on resource embedding, that can be triggered by go generate.
 // Replaces the variables based on the given dictionary,
 // and returns the path to the generated directory where the results are stored

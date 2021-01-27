@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"os"
 	"strings"
 
@@ -46,8 +47,8 @@ func init() {
 	rootCmd.AddCommand(createConnectCommand())
 	rootCmd.AddCommand(createAzureDevopsCommand())
 
-	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "If set logging will be verbose")
-	viper.BindPFlag("verbose", rootCmd.PersistentFlags().Lookup("verbose"))
+	rootCmd.PersistentFlags().BoolP(flags.Verbose, "v", false, "If set logging will be verbose")
+	viper.BindPFlag(flags.Verbose, rootCmd.PersistentFlags().Lookup(flags.Verbose))
 }
 
 func initConfig() {

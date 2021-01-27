@@ -1,13 +1,14 @@
-package azuredevops
+package azure_devops
 
 import (
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"strings"
 
 	"net/url"
 
-	"github.com/conplementAG/copsctl/internal/adapters/azuredevops"
+	"github.com/conplementAG/copsctl/internal/adapters/azure_devops"
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
-	"github.com/conplementAG/copsctl/internal/common/fileprocessing"
+	"github.com/conplementAG/copsctl/internal/common/file_processing"
 	"github.com/conplementAG/copsctl/internal/common/logging"
 
 	"github.com/spf13/viper"
@@ -26,12 +27,12 @@ type AzureDevopsOrchestrator struct {
 }
 
 func NewOrchestrator() *AzureDevopsOrchestrator {
-	environmentTag := viper.GetString("environment-tag")
-	organization := viper.GetString("organization")
-	project := viper.GetString("project")
-	namespace := viper.GetString("namespace")
-	username := viper.GetString("username")
-	accesstoken := viper.GetString("accesstoken")
+	environmentTag := viper.GetString(flags.EnvironmentTag)
+	organization := viper.GetString(flags.Organization)
+	project := viper.GetString(flags.Project)
+	namespace := viper.GetString(flags.Namespace)
+	username := viper.GetString(flags.Username)
+	accessToken := viper.GetString(flags.AccessToken)
 
 	isGlobalScope := namespace == ""
 
@@ -49,7 +50,7 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 		roleName:           strings.ToLower(urlDecode(organization)) + "-" + strings.ToLower(urlDecode(project)) + "-" + trim(namespace) + "-azuredevops-role",
 		endpointName:       trim(environmentTag) + "-" + trim(namespace),
 		username:           trim(username),
-		accesstoken:        trim(accesstoken),
+		accesstoken:        trim(accessToken),
 	}
 }
 
@@ -81,7 +82,7 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 		panic("Apply failed: " + err.Error())
 	}
 
-	fileprocessing.DeletePath(outputPath)
+	file_processing.DeletePath(outputPath)
 
 	logging.Info("Setting up the Azure DevOps connection...")
 
@@ -101,7 +102,7 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 	}
 
 	// now we can create the endpoint (aka. service connection / service endpoint)
-	azuredevops.CreateServiceEndpoint(
+	azure_devops.CreateServiceEndpoint(
 		orchestrator.username,
 		orchestrator.accesstoken,
 		orchestrator.endpointName,
@@ -121,8 +122,8 @@ func (orchestrator *AzureDevopsOrchestrator) prepareRbacFiles() string {
 }
 
 func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
-	return fileprocessing.InterpolateStaticFiles(
-		"internal/azuredevops/global",
+	return file_processing.InterpolateStaticFiles(
+		"internal/azure_devops/global",
 		map[string]string{
 			"{{NAMESPACE}}":       "kube-system",
 			"{{BINDING_NAME}}":    orchestrator.roleName + "-binding",
@@ -131,8 +132,8 @@ func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 }
 
 func (orchestrator *AzureDevopsOrchestrator) prepareScopedRbacFiles() string {
-	return fileprocessing.InterpolateStaticFiles(
-		"internal/azuredevops/scoped",
+	return file_processing.InterpolateStaticFiles(
+		"internal/azure_devops/scoped",
 		map[string]string{
 			"{{NAMESPACE}}":       orchestrator.Namespace,
 			"{{BINDING_NAME}}":    orchestrator.roleName + "-binding",

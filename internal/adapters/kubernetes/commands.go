@@ -6,7 +6,7 @@ import (
 
 	"github.com/ahmetb/go-linq"
 	"github.com/conplementAG/copsctl/internal/common/commands"
-	"github.com/conplementAG/copsctl/internal/common/fileprocessing"
+	"github.com/conplementAG/copsctl/internal/common/file_processing"
 	"github.com/conplementAG/copsctl/internal/common/logging"
 )
 
@@ -65,15 +65,15 @@ func Delete(filepath string) (string, error) {
 }
 
 func ApplyString(content string) (string, error) {
-	temporaryDirectory, temporaryFile := fileprocessing.WriteStringToTemporaryFile(content, "resource.yaml")
-	defer fileprocessing.DeletePath(temporaryDirectory)
+	temporaryDirectory, temporaryFile := file_processing.WriteStringToTemporaryFile(content, "resource.yaml")
+	defer file_processing.DeletePath(temporaryDirectory)
 
 	return Apply(temporaryFile)
 }
 
 func DeleteString(content string) (string, error) {
-	temporaryDirectory, temporaryFile := fileprocessing.WriteStringToTemporaryFile(content, "resource.yaml")
-	defer fileprocessing.DeletePath(temporaryDirectory)
+	temporaryDirectory, temporaryFile := file_processing.WriteStringToTemporaryFile(content, "resource.yaml")
+	defer file_processing.DeletePath(temporaryDirectory)
 
 	return Delete(temporaryFile)
 }

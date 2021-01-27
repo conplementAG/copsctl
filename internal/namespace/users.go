@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"strings"
 
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
@@ -20,7 +21,7 @@ func parseUsernames(userNames string) []string {
 }
 
 func AddUsers() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 	users := viper.GetString("users")
 
 	newUsers := parseUsernames(users)
@@ -63,7 +64,7 @@ func AddUsers() {
 }
 
 func RemoveUsers() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 	users := viper.GetString("users")
 
 	usersToRemove := parseUsernames(users)
@@ -107,7 +108,7 @@ func RemoveUsers() {
 }
 
 func ListUsers() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
 
 	if err != nil {

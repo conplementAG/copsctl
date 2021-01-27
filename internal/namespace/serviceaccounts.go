@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"strings"
 
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
@@ -37,7 +38,7 @@ func parseServiceAccounts(rawAccounts string) []kubernetes.CopsServiceAccount {
 }
 
 func AddServiceAccounts() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 	accounts := viper.GetString("service-accounts")
 
 	newAccounts := parseServiceAccounts(accounts)
@@ -80,7 +81,7 @@ func AddServiceAccounts() {
 }
 
 func RemoveServiceAccounts() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 	accounts := viper.GetString("service-accounts")
 
 	accountsToRemove := parseServiceAccounts(accounts)
@@ -124,7 +125,7 @@ func RemoveServiceAccounts() {
 }
 
 func ListServiceAccounts() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
 
 	if err != nil {
