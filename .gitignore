@@ -1,6 +1,5 @@
 # generated executable files
 cmd/**/*.exe
-cmd/**/copsctl
 cmd/copsctl/dist
 vendor
 .vscode

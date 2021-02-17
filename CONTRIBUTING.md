@@ -9,6 +9,8 @@ This project uses the Go modules, so make sure you use Golang > 1.13 for everyth
 git clone https://github.com/conplementAG/copsctl.git
 
 # Embedd resources
+
+cd cmd/copsctl
 go get -u github.com/mjibson/esc
 go generate .
 

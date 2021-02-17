@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"time"
 
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
@@ -13,7 +14,7 @@ func List() {
 }
 
 func Create() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 
 	users := parseUsernames(viper.GetString("users"))
 	serviceAccounts := parseServiceAccounts(viper.GetString("service-accounts"))
@@ -31,7 +32,7 @@ func Create() {
 }
 
 func Delete() {
-	namespaceName := viper.GetString("name")
+	namespaceName := viper.GetString(flags.Name)
 
 	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
 

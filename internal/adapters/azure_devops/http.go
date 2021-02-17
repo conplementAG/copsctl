@@ -1,25 +1,26 @@
-package azuredevops
+package azure_devops
 
 import (
 	"encoding/base64"
 	"fmt"
+	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"log"
 
 	"github.com/imroc/req"
 	"github.com/spf13/viper"
 )
 
-func prepareHeaders(username string, accesstoken string) req.Header {
-	if viper.GetBool("verbose") {
+func prepareHeaders(username string, accessToken string) req.Header {
+	if viper.GetBool(flags.Verbose) {
 		log.Println("Using username: " + username)
-		log.Println("Using token: " + accesstoken)
+		log.Println("Using token: " + accessToken)
 	}
 
 	headers := make(map[string]string)
 
 	headers["Accept"] = "application/json"
 	headers["Content-Type"] = "application/json"
-	headers["Authorization"] = createBasicAuthHeader(username, accesstoken)
+	headers["Authorization"] = createBasicAuthHeader(username, accessToken)
 
 	return headers
 }
@@ -46,7 +47,7 @@ func searchForEndpoint(username string, accesstoken string, name string, organiz
 
 	r, err := req.Get(reqUrl, headers, param)
 
-	if viper.GetBool("verbose") {
+	if viper.GetBool(flags.Verbose) {
 		log.Printf("%+v", r)
 	}
 
@@ -71,8 +72,8 @@ func searchForEndpoint(username string, accesstoken string, name string, organiz
 	return response
 }
 
-func deleteEndpoint(username string, accesstoken string, endpointId string, organization string, project string) {
-	header := prepareHeaders(username, accesstoken)
+func deleteEndpoint(username string, accessToken string, endpointId string, organization string, project string) {
+	header := prepareHeaders(username, accessToken)
 
 	param := req.QueryParam{
 		"api-version": "5.0-preview.2",
@@ -82,7 +83,7 @@ func deleteEndpoint(username string, accesstoken string, endpointId string, orga
 
 	r, err := req.Delete(reqUrl, header, param)
 
-	if viper.GetBool("verbose") {
+	if viper.GetBool(flags.Verbose) {
 		log.Printf("%+v", r)
 	}
 
@@ -97,8 +98,8 @@ func deleteEndpoint(username string, accesstoken string, endpointId string, orga
 	}
 }
 
-func createEndpoint(username string, accesstoken string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
-	headers := prepareHeaders(username, accesstoken)
+func createEndpoint(username string, accessToken string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
+	headers := prepareHeaders(username, accessToken)
 
 	param := req.QueryParam{
 		"api-version": "5.0-preview.2",
@@ -122,7 +123,7 @@ func createEndpoint(username string, accesstoken string, name string, organizati
 
 	r, err := req.Post(reqUrl, headers, param, body)
 
-	if viper.GetBool("verbose") {
+	if viper.GetBool(flags.Verbose) {
 		log.Printf("%+v", r)
 	}
 
@@ -137,8 +138,8 @@ func createEndpoint(username string, accesstoken string, name string, organizati
 	}
 }
 
-func updateEndpoint(username string, accesstoken string, endpointId string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
-	headers := prepareHeaders(username, accesstoken)
+func updateEndpoint(username string, accessToken string, endpointId string, name string, organization string, project string, kubernetesMasterUrl string, token string, certificate string) {
+	headers := prepareHeaders(username, accessToken)
 
 	param := req.QueryParam{
 		"api-version": "5.0-preview.2",
@@ -163,7 +164,7 @@ func updateEndpoint(username string, accesstoken string, endpointId string, name
 
 	r, err := req.Put(reqUrl, headers, param, body)
 
-	if viper.GetBool("verbose") {
+	if viper.GetBool(flags.Verbose) {
 		log.Printf("%+v", r)
 	}
 

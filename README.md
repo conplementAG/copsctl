@@ -7,7 +7,6 @@ copsctl - the Conplement AG Kubernetes developer tooling
 [![Build Status](https://cpgithub.visualstudio.com/GitHubPipelines/_apis/build/status/conplementAG.copsctl?branchName=master)](https://cpgithub.visualstudio.com/GitHubPipelines/_build/latest?definitionId=9&branchName=master)
 
 ## Requirements
-- [Helm V2.9.1](https://helm.sh/)
 - [kubectl V1.12.2](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## Installation

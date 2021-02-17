@@ -29,16 +29,26 @@ func ExecuteCommandLongRunning(command *exec.Cmd) (string, error) {
 }
 
 func ExecuteCommand(command *exec.Cmd) (string, error) {
+	return execute(command, true)
+}
+
+func ExecuteCommandWithSecretContents(command *exec.Cmd) (string, error) {
+	return execute(command, false)
+}
+
+func execute(command *exec.Cmd, loggingEnabled bool) (string, error) {
 	command.Stdin = os.Stdin
 
 	commandStdoutPipe, _ := command.StdoutPipe()
 	commandstderrPipe, _ := command.StderrPipe()
 
 	var stdoutBuffer, stderrBuffer bytes.Buffer
-	stdoutMultiwriter := io.MultiWriter(newDebugLogWriter(), &stdoutBuffer)
-	stderrMultiwriter := io.MultiWriter(newDebugLogWriter(), &stderrBuffer)
+	stdoutMultiwriter := io.MultiWriter(newDebugLogWriter(loggingEnabled), &stdoutBuffer)
+	stderrMultiwriter := io.MultiWriter(newDebugLogWriter(loggingEnabled), &stderrBuffer)
 
-	logging.Debugf("Executing: %s %s", command.Path, strings.Join(command.Args[1:], " "))
+	if loggingEnabled {
+		logging.Debugf("Executing: %s %s", command.Path, strings.Join(command.Args[1:], " "))
+	}
 
 	err := command.Start()
 
@@ -66,14 +76,20 @@ func ExecuteCommand(command *exec.Cmd) (string, error) {
 	return outStr, commandReturnValue
 }
 
-type debugLogWriter struct{}
+type debugLogWriter struct {
+	enabled bool
+}
 
-func newDebugLogWriter() *debugLogWriter {
-	return &debugLogWriter{}
+func newDebugLogWriter(enabled bool) *debugLogWriter {
+	return &debugLogWriter{
+		enabled: enabled,
+	}
 }
 
 func (w *debugLogWriter) Write(p []byte) (int, error) {
-	logging.Debug(string(p))
+	if w.enabled {
+		logging.Debug(string(p))
+	}
 
 	return len(p), nil
 }

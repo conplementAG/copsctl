@@ -1,4 +1,4 @@
-package azuredevops
+package azure_devops
 
 import "log"
 
