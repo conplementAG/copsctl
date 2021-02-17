@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 )
 
@@ -88,8 +89,10 @@ func saveKubeConfigToFile(configYaml string) {
 	home, err := homedir.Dir()
 	panicOnError(err)
 
-	configFilePath := filepath.Join(home, ".kube", "config")
+	err = os.MkdirAll(filepath.Join(home, ".kube"), os.ModePerm)
+	panicOnError(err)
 
+	configFilePath := filepath.Join(home, ".kube", "config")
 	err = ioutil.WriteFile(configFilePath, []byte(configYaml), 0600)
 	panicOnError(err)
 }
