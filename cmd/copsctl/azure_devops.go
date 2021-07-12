@@ -19,7 +19,6 @@ Use this command to administer Azure DevOps accounts (aka VSTS / hosted TFS).
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			// bind these during pre-run to avoid viper overwriting itself when same PFlag used with multiple commands
 			viper.BindPFlag(flags.EnvironmentTag, cmd.Flags().Lookup(flags.EnvironmentTag))
-			viper.BindPFlag(flags.Region, cmd.Flags().Lookup(flags.Region))
 			viper.BindPFlag(flags.Organization, cmd.Flags().Lookup(flags.Organization))
 			viper.BindPFlag(flags.Project, cmd.Flags().Lookup(flags.Project))
 			viper.BindPFlag(flags.Namespace, cmd.Flags().Lookup(flags.Namespace))
@@ -36,8 +35,6 @@ Use this command to administer Azure DevOps accounts (aka VSTS / hosted TFS).
 
 	command.PersistentFlags().StringP(flags.EnvironmentTag, "e", "", "Tag to use to make all environment names unique, e.g. your env identifier")
 	command.MarkPersistentFlagRequired(flags.EnvironmentTag)
-
-	command.PersistentFlags().StringP(flags.Region, "r", "northeurope", "Region where the resources should be deployed, e.g. northeurope")
 
 	command.PersistentFlags().StringP(flags.Organization, "o", "", "Name of the Azure DevOps organization")
 	command.MarkPersistentFlagRequired(flags.Organization)
