@@ -6,6 +6,7 @@ import (
 	"github.com/conplementAG/copsctl/internal/common/commands"
 	"github.com/conplementAG/copsctl/internal/common/logging"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 func ShowClusterInfo() {
@@ -28,5 +29,7 @@ func ShowClusterInfo() {
 		panic(err)
 	}
 
+	result = strings.TrimPrefix(result, "'")
+	result = strings.TrimSuffix(result, "'")
 	fmt.Println(result)
 }
