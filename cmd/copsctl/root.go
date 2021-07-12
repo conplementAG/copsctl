@@ -44,6 +44,7 @@ func init() {
 	// Cobra supports persistent flags, which, if defined here,
 	// will be global for your application.
 	rootCmd.AddCommand(createNamespaceCommand())
+	rootCmd.AddCommand(createClusterInfoCommand())
 	rootCmd.AddCommand(createConnectCommand())
 	rootCmd.AddCommand(createAzureDevopsCommand())
 
