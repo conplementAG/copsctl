@@ -8,7 +8,6 @@ const Users = "users"
 const ServiceAccounts = "service-accounts"
 
 const EnvironmentTag = "environment-tag"
-const Region = "region"
 const Organization = "organization"
 const Project = "project"
 const Namespace = "namespace"
