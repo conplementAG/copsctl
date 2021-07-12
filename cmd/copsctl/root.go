@@ -23,10 +23,10 @@ var rootCmd = &cobra.Command{
      \___\___/| .__/|___/\___|\__|_|
               |_|                       by Conplement AG
 	
-	Version 0.6.1
+	Version 0.7.2
     `,
 
-	Version: "0.6.1",
+	Version: "0.7.2",
 }
 
 // Execute adds all child commands to the root command and sets flags appropriately.
