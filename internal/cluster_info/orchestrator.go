@@ -1,6 +1,7 @@
 package cluster_info
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementAG/copsctl/internal/common/commands"
@@ -31,5 +32,23 @@ func ShowClusterInfo() {
 
 	result = strings.TrimPrefix(result, "'")
 	result = strings.TrimSuffix(result, "'")
-	fmt.Println(result)
+
+	if printConfigSilenceEverythingElse {
+		// no pretty formats or anything is needed if printing for parse purposes
+		fmt.Println(result)
+	} else {
+		var mapResult map[string]interface{}
+
+		// Unmarshal or Decode the JSON to the interface.
+		json.Unmarshal([]byte(result), &mapResult)
+		
+		indented, err := json.MarshalIndent(mapResult, "", "    ")
+
+		if err != nil {
+			logging.Errorf(err.Error())
+			panic(err)
+		}
+
+		fmt.Println(string(indented))
+	}
 }
