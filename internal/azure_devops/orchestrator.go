@@ -3,6 +3,7 @@ package azure_devops
 import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"strings"
+	"time"
 
 	"net/url"
 
@@ -85,6 +86,9 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 	file_processing.DeletePath(outputPath)
 
 	logging.Info("Setting up the Azure DevOps connection...")
+
+	// sleep a bit to make sure the secret is created
+	time.Sleep(3 * time.Second)
 
 	// first, get the token, the certificate of the created service account and the master plane FQDN
 	serviceAccount := kubernetes.GetServiceAccount(orchestrator.Namespace, orchestrator.serviceAccountName)
