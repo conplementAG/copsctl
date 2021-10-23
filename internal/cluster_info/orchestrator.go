@@ -14,15 +14,15 @@ func ShowClusterInfo() {
 	printConfigSilenceEverythingElse := viper.GetBool(flags.PrintToStdoutSilenceEverythingElse)
 
 	if !printConfigSilenceEverythingElse {
-		logging.Info("Reading the cluster info ..." )
-		logging.Info("NOTE: you can use the " + flags.PrintToStdoutSilenceEverythingElse + " flag to silence these outputs (useful for automation)" )
+		logging.Info("Reading the cluster info ...")
+		logging.Info("NOTE: you can use the " + flags.PrintToStdoutSilenceEverythingElse + " flag to silence these outputs (useful for automation)")
 
 		logging.Info("===========================================================")
 		logging.Info("==================== Cluster Info:  =======================")
 		logging.Info("===========================================================")
 	}
 
-	command := "kubectl get configmap -n coreops-public -o jsonpath='{.data}' coreops-cluster-info"
+	command := "kubectl get configmap -n coreops-public -o jsonpath=\"{.data['info\\.json']}\" coreops-cluster-info"
 	result, err := commands.ExecuteCommand(commands.Create(command))
 
 	if err != nil {
@@ -41,7 +41,7 @@ func ShowClusterInfo() {
 
 		// Unmarshal or Decode the JSON to the interface.
 		json.Unmarshal([]byte(result), &mapResult)
-		
+
 		indented, err := json.MarshalIndent(mapResult, "", "    ")
 
 		if err != nil {
