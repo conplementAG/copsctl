@@ -20,7 +20,7 @@ For contributing to the project, and for development instructions, please check 
 ## Getting Started
 
 ### Connect to a cluster
-`copsctrl connect -e <environment-tag>`
+`copsctl connect -e <environment-tag>`
 
 (*Environment-tag determines the name of the cluster.*)
 
