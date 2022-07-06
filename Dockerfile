@@ -1,4 +1,4 @@
-FROM golang:1.15.7
+FROM golang:1.18.0-bullseye
 
 RUN apt-get update && \
     apt-get install lsb-release -y
@@ -15,12 +15,8 @@ RUN go version
 
 ADD . /go/src/github.com/conplementAG/copsctl
 
-# Trigger resource embedding
-WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
-RUN go get -u github.com/mjibson/esc
-RUN go generate
-
 # simple build
+WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
 RUN go build -o copsctl .
 
 # run the tests
