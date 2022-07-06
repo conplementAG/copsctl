@@ -1,6 +1,7 @@
 package azure_devops
 
 import (
+	"embed"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"strings"
 	"time"
@@ -14,6 +15,12 @@ import (
 
 	"github.com/spf13/viper"
 )
+
+//go:embed global/*
+var globalYamls embed.FS
+
+//go:embed scoped/*
+var scopedYamls embed.FS
 
 type AzureDevopsOrchestrator struct {
 	Organization       string
@@ -127,7 +134,8 @@ func (orchestrator *AzureDevopsOrchestrator) prepareRbacFiles() string {
 
 func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 	return file_processing.InterpolateStaticFiles(
-		"internal/azure_devops/global",
+		globalYamls,
+		"global",
 		map[string]string{
 			"{{NAMESPACE}}":       "kube-system",
 			"{{BINDING_NAME}}":    orchestrator.roleName + "-binding",
@@ -137,7 +145,8 @@ func (orchestrator *AzureDevopsOrchestrator) prepareGlobalRbacFiles() string {
 
 func (orchestrator *AzureDevopsOrchestrator) prepareScopedRbacFiles() string {
 	return file_processing.InterpolateStaticFiles(
-		"internal/azure_devops/scoped",
+		scopedYamls,
+		"scoped",
 		map[string]string{
 			"{{NAMESPACE}}":       orchestrator.Namespace,
 			"{{BINDING_NAME}}":    orchestrator.roleName + "-binding",

@@ -1,12 +1,12 @@
 package file_processing
 
 import (
+	"embed"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"github.com/conplementAG/copsctl/internal/resources"
 	"github.com/rs/xid"
 )
 
@@ -32,25 +32,24 @@ func DeletePath(filePath string) {
 // It depends on resource embedding, that can be triggered by go generate.
 // Replaces the variables based on the given dictionary,
 // and returns the path to the generated directory where the results are stored
-func InterpolateStaticFiles(inputPath string, variables map[string]string) string {
-	filesystem := resources.Dir(false, "/")
-	directory, openDirError := filesystem.Open(inputPath)
-	panicOnError(openDirError)
-
-	files, listDirectoryError := directory.Readdir(9999)
-	panicOnError(listDirectoryError)
+func InterpolateStaticFiles(inputPathFs embed.FS, inputPath string, variables map[string]string) string {
+	directory, readDirError := inputPathFs.ReadDir(inputPath)
+	panicOnError(readDirError)
 
 	uniqueOutputFolder := createUniqueDirectory()
 
-	for _, f := range files {
-
-		fileContents, _ := resources.FSString(false, "/"+inputPath+"/"+f.Name())
-
+	for _, file := range directory {
+		f, erri := inputPathFs.Open(inputPath + "/" + file.Name())
+		if erri != nil {
+			panicOnError(erri)
+		}
+		filesContent, _ := ioutil.ReadAll(f)
+		fileContentString := string(filesContent)
 		for key, value := range variables {
-			fileContents = strings.Replace(fileContents, key, value, -1)
+			fileContentString = strings.Replace(fileContentString, key, value, -1)
 		}
 
-		err := ioutil.WriteFile(filepath.Join(uniqueOutputFolder, f.Name()), []byte(fileContents), 0644)
+		err := ioutil.WriteFile(filepath.Join(uniqueOutputFolder, file.Name()), []byte(fileContentString), 0644)
 		panicOnError(err)
 	}
 
