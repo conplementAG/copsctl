@@ -2,26 +2,13 @@
 
 ### How to build the tool
 
-This project uses the Go modules, so make sure you use Golang > 1.13 for everything to work smoothly. 
-
 ```bash
 # Clone the project 
 git clone https://github.com/conplementAG/copsctl.git
 
-# Embedd resources
-
-cd cmd/copsctl
-go get -u github.com/mjibson/esc
-go generate .
-
 # Compile to executable
 go build .
 ```
-
-*Additional Info:*
-
-The  snippet above will put the `esc`-executable into your `$GOPATH/bin` directory, so it is available in the `go generate` phase.
-This is required because `esc` will search for `yaml-files` and embedd those into the final binary, so the executable can run idependant from any working directory.
 
 ## How to create a release
 

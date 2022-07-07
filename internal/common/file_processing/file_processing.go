@@ -27,29 +27,27 @@ func DeletePath(filePath string) {
 	panicOnError(err)
 }
 
-// InterpolateStaticFiles loads all the files in given resource path.
-// E.g.: internal/azure_devops/global
-// It depends on resource embedding, that can be triggered by go generate.
+// InterpolateStaticFiles loads all the files in given embed FS path.
+// It depends on resource embedding, set by go:embed directive
 // Replaces the variables based on the given dictionary,
 // and returns the path to the generated directory where the results are stored
-func InterpolateStaticFiles(inputPathFs embed.FS, inputPath string, variables map[string]string) string {
-	directory, readDirError := inputPathFs.ReadDir(inputPath)
+func InterpolateStaticFiles(inputPathFs embed.FS, inputPathRootFolderName string, variables map[string]string) string {
+	directory, readDirError := inputPathFs.ReadDir(inputPathRootFolderName)
 	panicOnError(readDirError)
 
 	uniqueOutputFolder := createUniqueDirectory()
 
 	for _, file := range directory {
-		f, erri := inputPathFs.Open(inputPath + "/" + file.Name())
-		if erri != nil {
-			panicOnError(erri)
-		}
-		filesContent, _ := ioutil.ReadAll(f)
+		f, err := inputPathFs.Open(inputPathRootFolderName + "/" + file.Name())
+		panicOnError(err)
+		filesContent, err := ioutil.ReadAll(f)
+		panicOnError(err)
 		fileContentString := string(filesContent)
 		for key, value := range variables {
 			fileContentString = strings.Replace(fileContentString, key, value, -1)
 		}
 
-		err := ioutil.WriteFile(filepath.Join(uniqueOutputFolder, file.Name()), []byte(fileContentString), 0644)
+		err = ioutil.WriteFile(filepath.Join(uniqueOutputFolder, file.Name()), []byte(fileContentString), 0644)
 		panicOnError(err)
 	}
 

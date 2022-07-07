@@ -16,6 +16,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// see https://pkg.go.dev/embed
 //go:embed global/*
 var globalYamls embed.FS
 
