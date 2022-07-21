@@ -12,9 +12,10 @@ import (
 func createAzureDevopsCommand() *cobra.Command {
 	var command = &cobra.Command{
 		Use:   "azure-devops",
-		Short: "Command group for administration of Azure DevOps accounts",
+		Short: "[DEPRECATED] Command group for administration of Azure DevOps accounts",
 		Long: `
-Use this command to administer Azure DevOps accounts (aka VSTS / hosted TFS).
+[DEPRECATED] Instead of setting up the Azure DevOps service connection, consider using copsctl connect just before deploying via Helm. 
+This way you will not have a dependency on Azure DevOps and a prerequisite to setup the service connection before deploying.
 		`,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			// bind these during pre-run to avoid viper overwriting itself when same PFlag used with multiple commands
@@ -58,10 +59,10 @@ Use this command to administer Azure DevOps accounts (aka VSTS / hosted TFS).
 func createAzureDevopsCreateEndpointCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "create-endpoint",
-		Short: "Connect the Azure DevOps account to the current Kubernetes cluster.",
+		Short: "[DEPRECATED] Connect the Azure DevOps account to the current Kubernetes cluster.",
 		Long: `
-Use this command to provision a service account which will be used to create a service endpoint in the Azure DevOps project.
-This command is idempotent.
+[DEPRECATED] Use this command to provision a service account which will be used to create a service endpoint in the Azure DevOps project.
+This command is idempotent. Check azure-devops command info for deprecation explanation.
 		`,
 		Run: func(cmd *cobra.Command, args []string) {
 			azure_devops.NewOrchestrator().ConfigureEndpoint()
