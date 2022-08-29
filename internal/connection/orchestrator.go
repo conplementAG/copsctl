@@ -8,6 +8,7 @@ import (
 	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
+	"io"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -51,9 +52,10 @@ func Connect() {
 		fmt.Println(configYaml)
 	} else {
 		if !viper.GetBool(flags.AutoApprove) {
-			confirmOperation("Proceeding will overwrite your local $HOME/.kube/config file. Impact of this is that you will lose " +
-				"existing connections to other clusters. Type 'yes' to proceed. You can also consider using the " + flags.PrintToStdout + " " +
-				"flag to see instructions on merging the kube config files")
+			confirmOperation("Proceeding will overwrite your local $HOME/.kube/config file. Your old config will be backed up, but the impact of " +
+				"this is that you will lose existing connections to other clusters. You can manually restore your connections by renaming the config " +
+				"backup (in .kube directory) back to 'config' file name. Type 'yes' to proceed. You can also consider using the " +
+				flags.PrintToStdout + "flag to see instructions on merging the kube config files")
 		}
 
 		saveKubeConfigToFile(configYaml)
@@ -93,8 +95,40 @@ func saveKubeConfigToFile(configYaml string) {
 	panicOnError(err)
 
 	configFilePath := filepath.Join(home, ".kube", "config")
+
+	// check if file already there, make a backup
+	if _, err := os.Stat(configFilePath); err == nil {
+		copyFile(configFilePath, filepath.Join(home, ".kube", "copsctl_backup_config"))
+	}
+
 	err = ioutil.WriteFile(configFilePath, []byte(configYaml), 0600)
 	panicOnError(err)
+}
+
+func copyFile(sourceFile, destinationFile string) error {
+	in, err := os.Open(sourceFile)
+
+	if err != nil {
+		return fmt.Errorf("could not open file which was expected to exist: %v, error: %w", sourceFile, err)
+	}
+
+	defer in.Close()
+
+	out, err := os.Create(destinationFile)
+
+	if err != nil {
+		return fmt.Errorf("could not create the destination file: %v, error: %w", destinationFile, err)
+	}
+
+	defer out.Close()
+
+	_, err = io.Copy(out, in)
+
+	if err != nil {
+		return fmt.Errorf("problem copying the file from %v to %v, error: %w", sourceFile, destinationFile, err)
+	}
+
+	return out.Close()
 }
 
 type KubeConfigsContainerV1 struct {
