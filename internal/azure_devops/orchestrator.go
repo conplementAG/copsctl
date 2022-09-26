@@ -3,6 +3,9 @@ package azure_devops
 import (
 	"embed"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
+	"github.com/conplementag/cops-hq/pkg/commands"
+	"github.com/conplementag/cops-hq/pkg/hq"
+	"github.com/sirupsen/logrus"
 	"strings"
 	"time"
 
@@ -11,12 +14,12 @@ import (
 	"github.com/conplementAG/copsctl/internal/adapters/azure_devops"
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
 	"github.com/conplementAG/copsctl/internal/common/file_processing"
-	"github.com/conplementAG/copsctl/internal/common/logging"
 
 	"github.com/spf13/viper"
 )
 
 // see https://pkg.go.dev/embed
+//
 //go:embed global/*
 var globalYamls embed.FS
 
@@ -24,6 +27,8 @@ var globalYamls embed.FS
 var scopedYamls embed.FS
 
 type AzureDevopsOrchestrator struct {
+	hq                 hq.HQ
+	executor           commands.Executor
 	Organization       string
 	Project            string
 	Namespace          string
@@ -32,10 +37,10 @@ type AzureDevopsOrchestrator struct {
 	roleName           string
 	endpointName       string
 	username           string
-	accesstoken        string
+	accessToken        string
 }
 
-func NewOrchestrator() *AzureDevopsOrchestrator {
+func New(hq hq.HQ) *AzureDevopsOrchestrator {
 	environmentTag := viper.GetString(flags.EnvironmentTag)
 	organization := viper.GetString(flags.Organization)
 	project := viper.GetString(flags.Project)
@@ -50,6 +55,8 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 	}
 
 	return &AzureDevopsOrchestrator{
+		hq:           hq,
+		executor:     hq.GetExecutor(),
 		Organization: trim(organization),
 		Project:      trim(project),
 		Namespace:    trim(namespace),
@@ -59,7 +66,7 @@ func NewOrchestrator() *AzureDevopsOrchestrator {
 		roleName:           strings.ToLower(urlDecode(organization)) + "-" + strings.ToLower(urlDecode(project)) + "-" + trim(namespace) + "-azuredevops-role",
 		endpointName:       trim(environmentTag) + "-" + trim(namespace),
 		username:           trim(username),
-		accesstoken:        trim(accessToken),
+		accessToken:        trim(accessToken),
 	}
 }
 
@@ -73,19 +80,19 @@ func trim(source string) string {
 }
 
 func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
-	logging.Info("Connecting the current k8s cluster with an Azure DevOps account...")
+	logrus.Info("Connecting the current k8s cluster with an Azure DevOps account...")
 
 	if orchestrator.globalScope {
-		logging.Info("RBAC will be without limitation, since no 'namespace' was specified, and the RBAC resources will be in kube-system")
+		logrus.Info("RBAC will be without limitation, since no 'namespace' was specified, and the RBAC resources will be in kube-system")
 	} else {
-		logging.Info("RBAC will be scoped to namespace " + orchestrator.Namespace)
+		logrus.Info("RBAC will be scoped to namespace " + orchestrator.Namespace)
 	}
 
-	logging.Info("Creating the RBAC resources")
+	logrus.Info("Creating the RBAC resources")
 
 	outputPath := orchestrator.prepareRbacFiles()
 
-	_, err := kubernetes.Apply(outputPath)
+	_, err := kubernetes.Apply(orchestrator.executor, outputPath)
 
 	if err != nil {
 		panic("Apply failed: " + err.Error())
@@ -93,21 +100,21 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 
 	file_processing.DeletePath(outputPath)
 
-	logging.Info("Setting up the Azure DevOps connection...")
+	logrus.Info("Setting up the Azure DevOps connection...")
 
 	// sleep a bit to make sure the secret is created
 	time.Sleep(3 * time.Second)
 
 	// first, get the token, the certificate of the created service account and the master plane FQDN
-	serviceAccount := kubernetes.GetServiceAccount(orchestrator.Namespace, orchestrator.serviceAccountName)
+	serviceAccount := kubernetes.GetServiceAccount(orchestrator.executor, orchestrator.Namespace, orchestrator.serviceAccountName)
 
 	if len(serviceAccount.Secrets) != 1 {
 		panic("Expected the service account to contain exactly one secret (where the token and cert are located)")
 	}
 
-	serviceAccountSecret := kubernetes.GetServiceAccountSecret(orchestrator.Namespace, serviceAccount.Secrets[0].Name)
+	serviceAccountSecret := kubernetes.GetServiceAccountSecret(orchestrator.executor, orchestrator.Namespace, serviceAccount.Secrets[0].Name)
 
-	masterPlaneFqdn, err := kubernetes.GetCurrentMasterPlaneFqdn()
+	masterPlaneFqdn, err := kubernetes.GetCurrentMasterPlaneFqdn(orchestrator.executor)
 
 	if err != nil {
 		panic("Could not get the master plane fqdn " + err.Error())
@@ -116,7 +123,7 @@ func (orchestrator *AzureDevopsOrchestrator) ConfigureEndpoint() {
 	// now we can create the endpoint (aka. service connection / service endpoint)
 	azure_devops.CreateServiceEndpoint(
 		orchestrator.username,
-		orchestrator.accesstoken,
+		orchestrator.accessToken,
 		orchestrator.endpointName,
 		orchestrator.Organization,
 		orchestrator.Project,

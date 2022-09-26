@@ -3,18 +3,30 @@ package connection
 import (
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
-	"github.com/conplementAG/copsctl/internal/common/commands"
-	"github.com/conplementAG/copsctl/internal/common/logging"
+	"github.com/conplementag/cops-hq/pkg/commands"
+	"github.com/conplementag/cops-hq/pkg/hq"
 	"github.com/mitchellh/go-homedir"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 	"io"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 )
 
-func Connect() {
+type Orchestrator struct {
+	hq       hq.HQ
+	executor commands.Executor
+}
+
+func New(hq hq.HQ) *Orchestrator {
+	return &Orchestrator{
+		hq:       hq,
+		executor: hq.GetExecutor(),
+	}
+}
+
+func (o *Orchestrator) Connect() {
 	environmentTag := viper.GetString(flags.EnvironmentTag)
 	connectionString := viper.GetString(flags.ConnectionString)
 	isTechnicalAccount := viper.GetBool(flags.TechnicalAccount)
@@ -24,13 +36,13 @@ func Connect() {
 
 	validateConnectionString(connectionString, environmentTag, isTechnicalAccount)
 
-	blob := downloadBlob(connectionString)
+	blob := downloadBlob(o, connectionString)
 	validateDownloadedBlob(blob, isTechnicalAccount)
 
 	configs := parseConfigs(blob)
 
 	if !printConfigSilenceEverythingElse {
-		logging.Info("Using configuration last modified at " + configs.ModifiedAt)
+		logrus.Info("Using configuration last modified at " + configs.ModifiedAt)
 	}
 
 	configYaml := marshalToYaml(configs.PrimaryKubeConfig)
@@ -41,32 +53,38 @@ func Connect() {
 
 	if printToStdout || printConfigSilenceEverythingElse {
 		if !printConfigSilenceEverythingElse {
-			logging.Info("===========================================================")
-			logging.Info("You can either replace your config file in $HOME/.kube/config manually, or merge the files.")
-			logging.Info("Check for reference: https://stackoverflow.com/questions/46184125/how-to-merge-kubectl-config-file-with-kube-config")
-			logging.Info("===========================================================")
-			logging.Info("==================== Kube Config:  ========================")
-			logging.Info("===========================================================")
+			logrus.Info("===========================================================")
+			logrus.Info("You can either replace your config file in $HOME/.kube/config manually, or merge the files.")
+			logrus.Info("Check for reference: https://stackoverflow.com/questions/46184125/how-to-merge-kubectl-config-file-with-kube-config")
+			logrus.Info("===========================================================")
+			logrus.Info("==================== Kube Config:  ========================")
+			logrus.Info("===========================================================")
 		}
 
 		fmt.Println(configYaml)
 	} else {
+		proceed := true
 		if !viper.GetBool(flags.AutoApprove) {
-			confirmOperation("Proceeding will overwrite your local $HOME/.kube/config file. Your old config will be backed up, but the impact of " +
+			if !o.executor.AskUserToConfirm("Proceeding will overwrite your local $HOME/.kube/config file. Your old config will be backed up, but the impact of " +
 				"this is that you will lose existing connections to other clusters. You can manually restore your connections by renaming the config " +
 				"backup (in .kube directory) back to 'config' file name. Type 'yes' to proceed. You can also consider using the " +
-				flags.PrintToStdout + "flag to see instructions on merging the kube config files")
+				flags.PrintToStdout + "flag to see instructions on merging the kube config files") {
+				proceed = false
+			}
 		}
 
-		saveKubeConfigToFile(configYaml)
+		if proceed {
+			saveKubeConfigToFile(configYaml)
 
-		logging.Info("Connection setup completed.")
+			logrus.Info("Connection setup completed.")
+		} else {
+			logrus.Warn("Connection setup aborted.")
+		}
 	}
 }
 
-func downloadBlob(connectionString string) string {
-	blob, err := commands.ExecuteCommandWithSecretContents(
-		commands.Create("curl -s --retry 3 " + connectionString))
+func downloadBlob(o *Orchestrator, connectionString string) string {
+	blob, err := o.executor.ExecuteSilent("curl -s --retry 3 " + connectionString)
 
 	if err != nil {
 		panic(err)
@@ -101,7 +119,7 @@ func saveKubeConfigToFile(configYaml string) {
 		copyFile(configFilePath, filepath.Join(home, ".kube", "copsctl_backup_config"))
 	}
 
-	err = ioutil.WriteFile(configFilePath, []byte(configYaml), 0600)
+	err = os.WriteFile(configFilePath, []byte(configYaml), 0600)
 	panicOnError(err)
 }
 

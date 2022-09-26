@@ -2,10 +2,10 @@ package namespace
 
 import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
+	"github.com/sirupsen/logrus"
 	"strings"
 
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
-	"github.com/conplementAG/copsctl/internal/common/logging"
 	"github.com/spf13/viper"
 )
 
@@ -37,12 +37,12 @@ func parseServiceAccounts(rawAccounts string) []kubernetes.CopsServiceAccount {
 	return parsedAccounts
 }
 
-func AddServiceAccounts() {
+func (o *Orchestrator) AddServiceAccounts() {
 	namespaceName := viper.GetString(flags.Name)
 	accounts := viper.GetString("service-accounts")
 
 	newAccounts := parseServiceAccounts(accounts)
-	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
 		panic("Could not get the cops namespace " + err.Error())
@@ -69,23 +69,23 @@ func AddServiceAccounts() {
 		}
 	}
 
-	copsnamespace := renderTemplate(namespaceName, existingUsers, relevantAccounts)
+	copsNamespace := renderTemplate(namespaceName, existingUsers, relevantAccounts)
 
-	_, err = kubernetes.ApplyString(copsnamespace)
+	_, err = kubernetes.ApplyString(o.executor, copsNamespace)
 
 	if err != nil {
 		panic("Apply failed: " + err.Error())
 	}
 
-	logging.Infof("%d service account(s) have been successfully added to %s namespace", addedAccountsCount, namespaceName)
+	logrus.Infof("%d service account(s) have been successfully added to %s namespace", addedAccountsCount, namespaceName)
 }
 
-func RemoveServiceAccounts() {
+func (o *Orchestrator) RemoveServiceAccounts() {
 	namespaceName := viper.GetString(flags.Name)
 	accounts := viper.GetString("service-accounts")
 
 	accountsToRemove := parseServiceAccounts(accounts)
-	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
 		panic("Could not get the cops namespace " + err.Error())
@@ -115,18 +115,18 @@ func RemoveServiceAccounts() {
 
 	copsnamespace := renderTemplate(namespaceName, existingUsers, resultingAccounts)
 
-	_, err = kubernetes.ApplyString(copsnamespace)
+	_, err = kubernetes.ApplyString(o.executor, copsnamespace)
 
 	if err != nil {
 		panic("Apply failed: " + err.Error())
 	}
 
-	logging.Infof("%d service account(s) have been removed from the %s namespace", removedAccountsCount, namespaceName)
+	logrus.Infof("%d service account(s) have been removed from the %s namespace", removedAccountsCount, namespaceName)
 }
 
-func ListServiceAccounts() {
+func (o *Orchestrator) ListServiceAccounts() {
 	namespaceName := viper.GetString(flags.Name)
-	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
 		panic("Could not get the cops namespace " + err.Error())
@@ -134,9 +134,9 @@ func ListServiceAccounts() {
 
 	serviceAccounts := namespace.Spec.NamespaceAdminServiceAccounts
 
-	logging.Info("Current service accounts in the namespace " + namespaceName + ":")
+	logrus.Info("Current service accounts in the namespace " + namespaceName + ":")
 
 	for _, sa := range serviceAccounts {
-		logging.Info(" - " + sa.ServiceAccount + "." + sa.Namespace)
+		logrus.Info(" - " + sa.ServiceAccount + "." + sa.Namespace)
 	}
 }

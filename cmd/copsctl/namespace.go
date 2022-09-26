@@ -2,257 +2,139 @@ package main
 
 import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
-	"os"
-
 	"github.com/conplementAG/copsctl/internal/namespace"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
+	"github.com/conplementag/cops-hq/pkg/cli"
+	"github.com/conplementag/cops-hq/pkg/hq"
 )
 
-func createNamespaceCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "namespace",
-		Short: "Command group for administration of k8s namespaces",
-		Long:  "Use this command to administer k8s namespaces.",
-		Run: func(cmd *cobra.Command, args []string) {
-			// since "namespace" is not really a command, but rather a group of commands, we
-			// show the help for the command group instead
-			if len(args) == 0 {
-				cmd.Help()
-				os.Exit(0)
-			}
-		},
-	}
+func createNamespaceCommand(hq hq.HQ) {
+	namespaceCmdGroup := hq.GetCli().AddBaseCommand("namespace", "Command group for administration of k8s namespaces",
+		"Use this command to administer k8s namespaces.", nil)
 
-	command.AddCommand(createNamespaceListCommand())
-	command.AddCommand(createNamespaceCreateCommand())
-	command.AddCommand(createNamespaceDeleteCommand())
-	command.AddCommand(createNamespaceUsersCommand())
-	command.AddCommand(createNamespaceServiceAccountsCommand())
+	namespaceOrchestrator := namespace.New(hq)
 
-	return command
+	createNamespaceListCommand(namespaceOrchestrator, namespaceCmdGroup)
+	createNamespaceCreateCommand(namespaceOrchestrator, namespaceCmdGroup)
+	createNamespaceDeleteCommand(namespaceOrchestrator, namespaceCmdGroup)
+	createNamespaceUsersCommand(namespaceOrchestrator, namespaceCmdGroup)
+	createNamespaceServiceAccountsCommand(namespaceOrchestrator, namespaceCmdGroup)
 }
 
-func createNamespaceListCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "list",
-		Short: "Lists all the CoreOps namespaces",
-		Long:  "Use this list all the CoreOps namespaces inside this cluster.",
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.List()
-		},
-	}
-
-	return command
+func createNamespaceListCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	cmd.AddCommand("list", "Lists all the CoreOps namespaces", "Use this list all the CoreOps namespaces inside this cluster.", func() {
+		o.List()
+	})
 }
 
-func createNamespaceCreateCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "create",
-		Short: "Create a new namespace",
-		Long: "Use this command to create a new k8s namespace. This command is idempotent, " +
-			"which means you can use it multiple times to ensure that the namespace is there, " +
-			"as well as all other users.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.Users, cmd.Flags().Lookup(flags.Users))
-			viper.BindPFlag(flags.ServiceAccounts, cmd.Flags().Lookup(flags.ServiceAccounts))
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.Create()
-		},
-	}
+func createNamespaceCreateCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceCreateCmd := cmd.AddCommand("create", "Create a new namespace",
+		"Use this command to create a new k8s namespace. This command is idempotent, "+
+			"which means you can use it multiple times to ensure that the namespace is there, "+
+			"as well as all other users.", func() {
+			o.Create()
+		})
 
-	command.PersistentFlags().StringP(flags.Name, "n", "", "Name of the namespace")
-	command.MarkPersistentFlagRequired(flags.Name)
-
-	addUsersPersistentFlag(command)
-	command.MarkPersistentFlagRequired(flags.Users)
-
-	addServiceAccountsPersistentFlag(command)
-
-	return command
+	addUsersParam(namespaceCreateCmd)
+	addServiceAccountsParam(namespaceCreateCmd)
+	addNameParam(namespaceCreateCmd)
 }
 
-func createNamespaceDeleteCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "delete",
-		Short: "Delete an existing namespace",
-		Long:  "Use this command to delete existing cops namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.Delete()
-		},
-	}
+func createNamespaceDeleteCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceDeleteCmd := cmd.AddCommand("delete", "Delete an existing namespace",
+		"Use this command to delete existing cops namespace.", func() {
+			o.Delete()
+		})
 
-	command.PersistentFlags().StringP(flags.Name, "n", "", "Name of the namespace")
-	command.MarkPersistentFlagRequired(flags.Name)
-
-	return command
+	addNameParam(namespaceDeleteCmd)
 }
 
-func createNamespaceUsersCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "users",
-		Short: "Manage users of a namespace",
-		Long:  "Use this command to manage the users in an existing k8s namespace.",
-		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) == 0 {
-				cmd.Help()
-				os.Exit(0)
-			}
-		},
-	}
+func createNamespaceUsersCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceUserCmd := cmd.AddCommand("users", "Manage users of a namespace",
+		"Use this command to manage the users in an existing k8s namespace.",
+		nil)
 
-	command.PersistentFlags().StringP(flags.Name, "n", "", "Name of the namespace")
-	command.MarkPersistentFlagRequired(flags.Name)
+	addNameParam(namespaceUserCmd)
 
-	command.AddCommand(createNamespaceUsersAddCommand())
-	command.AddCommand(createNamespaceUsersRemoveCommand())
-	command.AddCommand(createNamespaceUsersListCommand())
-
-	return command
+	createNamespaceUsersAddCommand(o, namespaceUserCmd)
+	createNamespaceUsersRemoveCommand(o, namespaceUserCmd)
+	createNamespaceUsersListCommand(o, namespaceUserCmd)
 }
 
-func createNamespaceUsersAddCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "add",
-		Short: "Adds users to the namespace",
-		Long:  "Use this command to add users to an existing k8s namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.Users, cmd.Flags().Lookup(flags.Users))
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.AddUsers()
-		},
-	}
+func createNamespaceUsersAddCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceUsersAddCmd := cmd.AddCommand("add", "Adds users to the namespace",
+		"Use this command to add users to an existing k8s namespace.", func() {
+			o.AddUsers()
+		})
 
-	addUsersPersistentFlag(command)
-	command.MarkPersistentFlagRequired(flags.Users)
-	return command
+	addUsersParam(namespaceUsersAddCmd)
 }
 
-func createNamespaceUsersRemoveCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "remove",
-		Short: "Removes users from a namespace",
-		Long:  "Use this command to remove users from an existing k8s namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.Users, cmd.Flags().Lookup(flags.Users))
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.RemoveUsers()
-		},
-	}
+func createNamespaceUsersRemoveCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceUsersRemoveCmd := cmd.AddCommand("remove", "Removes users from a namespace",
+		"Use this command to remove users from an existing k8s namespace.", func() {
+			o.RemoveUsers()
+		})
 
-	addUsersPersistentFlag(command)
-	command.MarkPersistentFlagRequired(flags.Users)
-	return command
+	addUsersParam(namespaceUsersRemoveCmd)
 }
 
-func createNamespaceUsersListCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "list",
-		Short: "List users of a namespace",
-		Long:  "Use this command to list users of an existing k8s namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.ListUsers()
-		},
-	}
-	return command
+func createNamespaceUsersListCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	cmd.AddCommand("list", "List users of a namespace",
+		"Use this command to list users of an existing k8s namespace.", func() {
+			o.ListUsers()
+		})
 }
 
-func createNamespaceServiceAccountsCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "service-accounts",
-		Short: "Manage service accounts of a namespace",
-		Long:  "Use this command to manage the service accounts in an existing k8s namespace.",
-		Run: func(cmd *cobra.Command, args []string) {
-			if len(args) == 0 {
-				cmd.Help()
-				os.Exit(0)
-			}
-		},
-	}
+func createNamespaceServiceAccountsCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceServiceAccountsCmd := cmd.AddCommand("service-accounts",
+		"Manage service accounts of a namespace",
+		"Use this command to manage the service accounts in an existing k8s namespace.",
+		nil)
 
-	command.PersistentFlags().StringP(flags.Name, "n", "", "Name of the namespace")
-	command.MarkPersistentFlagRequired(flags.Name)
+	addNameParam(namespaceServiceAccountsCmd)
 
-	command.AddCommand(createNamespaceServiceAccountsAddCommand())
-	command.AddCommand(createNamespaceServiceAccountsRemoveCommand())
-	command.AddCommand(createNamespaceServiceAccountsListCommand())
-
-	return command
+	createNamespaceServiceAccountsAddCommand(o, namespaceServiceAccountsCmd)
+	createNamespaceServiceAccountsRemoveCommand(o, namespaceServiceAccountsCmd)
+	createNamespaceServiceAccountsListCommand(o, namespaceServiceAccountsCmd)
 }
 
-func createNamespaceServiceAccountsAddCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "add",
-		Short: "Adds service accounts to the namespace",
-		Long:  "Use this command to add service accounts to an existing k8s namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.ServiceAccounts, cmd.Flags().Lookup(flags.ServiceAccounts))
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.AddServiceAccounts()
-		},
-	}
+func createNamespaceServiceAccountsAddCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceServiceAccountAddCmd := cmd.AddCommand("add", "Adds service accounts to the namespace",
+		"Use this command to add service accounts to an existing k8s namespace.", func() {
+			o.AddServiceAccounts()
+		})
 
-	addServiceAccountsPersistentFlag(command)
-	command.MarkPersistentFlagRequired(flags.ServiceAccounts)
-	return command
+	addServiceAccountsParam(namespaceServiceAccountAddCmd)
 }
 
-func createNamespaceServiceAccountsRemoveCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "remove",
-		Short: "Removes users from a namespace",
-		Long:  "Use this command to remove service-accounts from an existing k8s namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.ServiceAccounts, cmd.Flags().Lookup(flags.ServiceAccounts))
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.RemoveServiceAccounts()
-		},
-	}
+func createNamespaceServiceAccountsRemoveCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceServiceAccountRemoveCmd := cmd.AddCommand("remove", "Removes users from a namespace",
+		"Use this command to remove service-accounts from an existing k8s namespace.", func() {
+			o.RemoveServiceAccounts()
+		})
 
-	addServiceAccountsPersistentFlag(command)
-	command.MarkPersistentFlagRequired(flags.ServiceAccounts)
-	return command
+	addServiceAccountsParam(namespaceServiceAccountRemoveCmd)
 }
 
-func createNamespaceServiceAccountsListCommand() *cobra.Command {
-	var command = &cobra.Command{
-		Use:   "list",
-		Short: "List service-accounts of a namespace",
-		Long:  "Use this command to list service-accounts of an existing k8s namespace.",
-		PreRun: func(cmd *cobra.Command, args []string) {
-			viper.BindPFlag(flags.Name, cmd.Flags().Lookup(flags.Name))
-		},
-		Run: func(cmd *cobra.Command, args []string) {
-			namespace.ListServiceAccounts()
-		},
-	}
-	return command
+func createNamespaceServiceAccountsListCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	cmd.AddCommand("list", "List service-accounts of a namespace",
+		"Use this command to list service-accounts of an existing k8s namespace.", func() {
+			o.ListServiceAccounts()
+		})
 }
 
-func addUsersPersistentFlag(command *cobra.Command) {
-	command.PersistentFlags().StringP(flags.Users, "u", "", "The email-addresses of the admin "+
+func addUsersParam(cmd cli.Command) {
+	cmd.AddPersistentParameterString(flags.Users, "", true, "u", "The email-addresses of the admin "+
 		"users of the namespace. Must be identical to Azure AD (case-sensitive). "+
 		"You can specify multiple users separated by commas.")
 }
 
-func addServiceAccountsPersistentFlag(command *cobra.Command) {
-	command.PersistentFlags().StringP(flags.ServiceAccounts, "s", "", "Optionally, you can specify service accounts "+
-		"which will be granted idential access level like the users. Each service accounts has to be in "+
+func addServiceAccountsParam(cmd cli.Command) {
+	cmd.AddPersistentParameterString(flags.ServiceAccounts, "", false, "s", "Optionally, you can specify service accounts "+
+		"which will be granted identical access level like the users. Each service accounts has to be in "+
 		"the format accountname.namespace, and multiple accounts can be specified separated by commas.")
+}
+
+func addNameParam(cmd cli.Command) {
+	cmd.AddPersistentParameterString(flags.Name, "", true, "n", "Name of the namespace")
 }

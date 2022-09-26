@@ -1,12 +1,13 @@
 package kubernetes
 
 import (
-	"github.com/conplementAG/copsctl/internal/common/commands"
+	"fmt"
+	"github.com/conplementag/cops-hq/pkg/commands"
 	"gopkg.in/yaml.v2"
 )
 
-func GetServiceAccountSecret(namespace string, name string) ServiceAccountSecret {
-	out, err := commands.ExecuteCommand(commands.Createf("kubectl get secret %s -n %s -o yaml --ignore-not-found", name, namespace))
+func GetServiceAccountSecret(executor commands.Executor, namespace string, name string) ServiceAccountSecret {
+	out, err := executor.Execute(fmt.Sprintf("kubectl get secret %s -n %s -o yaml --ignore-not-found", name, namespace))
 
 	if err != nil {
 		panic("we should never get an err when using ignore-not-found " + err.Error())

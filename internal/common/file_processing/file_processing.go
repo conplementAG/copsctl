@@ -2,7 +2,7 @@ package file_processing
 
 import (
 	"embed"
-	"io/ioutil"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -11,11 +11,11 @@ import (
 )
 
 // WriteStringToTemporaryFile writes the file contents into a file on a temporary disk location
-func WriteStringToTemporaryFile(fileContents string, filePath string) (outputfolder string, outputfile string) {
+func WriteStringToTemporaryFile(fileContents string, filePath string) (outputFolder string, outputFile string) {
 	outputFolderPath := createUniqueDirectory()
 
 	generatedFilePath := filepath.Join(outputFolderPath, filePath)
-	err := ioutil.WriteFile(generatedFilePath, []byte(fileContents), 0644)
+	err := os.WriteFile(generatedFilePath, []byte(fileContents), 0644)
 	panicOnError(err)
 
 	return outputFolderPath, generatedFilePath
@@ -40,14 +40,14 @@ func InterpolateStaticFiles(inputPathFs embed.FS, inputPathRootFolderName string
 	for _, file := range directory {
 		f, err := inputPathFs.Open(inputPathRootFolderName + "/" + file.Name())
 		panicOnError(err)
-		filesContent, err := ioutil.ReadAll(f)
+		filesContent, err := io.ReadAll(f)
 		panicOnError(err)
 		fileContentString := string(filesContent)
 		for key, value := range variables {
 			fileContentString = strings.Replace(fileContentString, key, value, -1)
 		}
 
-		err = ioutil.WriteFile(filepath.Join(uniqueOutputFolder, file.Name()), []byte(fileContentString), 0644)
+		err = os.WriteFile(filepath.Join(uniqueOutputFolder, file.Name()), []byte(fileContentString), 0644)
 		panicOnError(err)
 	}
 

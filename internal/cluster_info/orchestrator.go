@@ -4,29 +4,41 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
-	"github.com/conplementAG/copsctl/internal/common/commands"
-	"github.com/conplementAG/copsctl/internal/common/logging"
+	"github.com/conplementag/cops-hq/pkg/commands"
+	"github.com/conplementag/cops-hq/pkg/hq"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"strings"
 )
 
-func ShowClusterInfo() {
+type Orchestrator struct {
+	hq       hq.HQ
+	executor commands.Executor
+}
+
+func New(hq hq.HQ) *Orchestrator {
+	return &Orchestrator{
+		hq:       hq,
+		executor: hq.GetExecutor(),
+	}
+}
+
+func (o *Orchestrator) ShowClusterInfo() {
 	printConfigSilenceEverythingElse := viper.GetBool(flags.PrintToStdoutSilenceEverythingElse)
 
 	if !printConfigSilenceEverythingElse {
-		logging.Info("Reading the cluster info ...")
-		logging.Info("NOTE: you can use the " + flags.PrintToStdoutSilenceEverythingElse + " flag to silence these outputs (useful for automation)")
+		logrus.Info("Reading the cluster info ...")
+		logrus.Info("NOTE: you can use the " + flags.PrintToStdoutSilenceEverythingElse + " flag to silence these outputs (useful for automation)")
 
-		logging.Info("===========================================================")
-		logging.Info("==================== Cluster Info:  =======================")
-		logging.Info("===========================================================")
+		logrus.Info("===========================================================")
+		logrus.Info("==================== Cluster Info:  =======================")
+		logrus.Info("===========================================================")
 	}
 
-	command := "kubectl get configmap -n coreops-public -o jsonpath=\"{.data['info\\.json']}\" coreops-cluster-info"
-	result, err := commands.ExecuteCommand(commands.Create(command))
+	result, err := o.executor.Execute("kubectl get configmap -n coreops-public -o jsonpath=\"{.data['info\\.json']}\" coreops-cluster-info")
 
 	if err != nil {
-		logging.Errorf(err.Error())
+		logrus.Errorf(err.Error())
 		panic(err)
 	}
 
@@ -45,7 +57,7 @@ func ShowClusterInfo() {
 		indented, err := json.MarshalIndent(mapResult, "", "    ")
 
 		if err != nil {
-			logging.Errorf(err.Error())
+			logrus.Errorf(err.Error())
 			panic(err)
 		}
 
