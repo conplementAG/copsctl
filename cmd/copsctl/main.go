@@ -1,16 +1,20 @@
 package main
 
 import (
+	"github.com/conplementag/cops-hq/pkg/error_handling"
+	"github.com/conplementag/cops-hq/pkg/hq"
+	"github.com/sirupsen/logrus"
 	"os"
-
-	"github.com/conplementAG/copsctl/internal/common/logging"
 )
 
 func main() {
-	defer logging.Dispose()
 	defer errorhandler()
+	hq := hq.NewQuiet("copsctl", "0.9.0", "copsctl.log")
+	createCommands(hq)
 
-	Execute()
+	error_handling.PanicOnAnyError = true
+
+	hq.Run()
 }
 
 func errorhandler() {
@@ -18,7 +22,7 @@ func errorhandler() {
 	// since they are unrecoverable and need some user intervention (or they are genuine panic programming
 	// errors)
 	if r := recover(); r != nil {
-		logging.Errorf("copsctl --- error occured: %+v\n", r)
+		logrus.Errorf("copsctl --- error occured: %+v\n", r)
 		os.Exit(1)
 	}
 }

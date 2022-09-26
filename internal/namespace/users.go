@@ -2,10 +2,10 @@ package namespace
 
 import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
+	"github.com/sirupsen/logrus"
 	"strings"
 
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
-	"github.com/conplementAG/copsctl/internal/common/logging"
 	"github.com/spf13/viper"
 )
 
@@ -20,12 +20,12 @@ func parseUsernames(userNames string) []string {
 	return parsedUsers
 }
 
-func AddUsers() {
+func (o *Orchestrator) AddUsers() {
 	namespaceName := viper.GetString(flags.Name)
 	users := viper.GetString("users")
 
 	newUsers := parseUsernames(users)
-	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
 		panic("Could not get the cops namespace " + err.Error())
@@ -52,23 +52,23 @@ func AddUsers() {
 		}
 	}
 
-	copsnamespace := renderTemplate(namespaceName, relevantUsers, existingServiceAccounts)
+	copsNamespace := renderTemplate(namespaceName, relevantUsers, existingServiceAccounts)
 
-	_, err = kubernetes.ApplyString(copsnamespace)
+	_, err = kubernetes.ApplyString(o.executor, copsNamespace)
 
 	if err != nil {
 		panic("Apply failed: " + err.Error())
 	}
 
-	logging.Infof("%d user(s) have been successfully added to %s namespace", addedUserCount, namespaceName)
+	logrus.Infof("%d user(s) have been successfully added to %s namespace", addedUserCount, namespaceName)
 }
 
-func RemoveUsers() {
+func (o *Orchestrator) RemoveUsers() {
 	namespaceName := viper.GetString(flags.Name)
 	users := viper.GetString("users")
 
 	usersToRemove := parseUsernames(users)
-	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
 		panic("Could not get the cops namespace " + err.Error())
@@ -96,20 +96,20 @@ func RemoveUsers() {
 		}
 	}
 
-	copsnamespace := renderTemplate(namespaceName, relevantUsers, existingServiceAccounts)
+	copsNamespace := renderTemplate(namespaceName, relevantUsers, existingServiceAccounts)
 
-	_, err = kubernetes.ApplyString(copsnamespace)
+	_, err = kubernetes.ApplyString(o.executor, copsNamespace)
 
 	if err != nil {
 		panic("Apply failed: " + err.Error())
 	}
 
-	logging.Infof("%d user(s) have been successfully removed from %s namespace", removedUserCount, namespaceName)
+	logrus.Infof("%d user(s) have been successfully removed from %s namespace", removedUserCount, namespaceName)
 }
 
-func ListUsers() {
+func (o *Orchestrator) ListUsers() {
 	namespaceName := viper.GetString(flags.Name)
-	namespace, err := kubernetes.GetCopsNamespace(namespaceName)
+	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
 		panic("Could not get the cops namespace " + err.Error())
@@ -117,9 +117,9 @@ func ListUsers() {
 
 	users := namespace.Spec.NamespaceAdminUsers
 
-	logging.Info("Current users in namespace " + namespaceName + ":")
+	logrus.Info("Current users in namespace " + namespaceName + ":")
 
 	for _, user := range users {
-		logging.Info(" - " + user)
+		logrus.Info(" - " + user)
 	}
 }

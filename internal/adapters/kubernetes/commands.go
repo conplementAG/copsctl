@@ -2,23 +2,17 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"github.com/conplementag/cops-hq/pkg/commands"
+	"github.com/sirupsen/logrus"
 	"strings"
 
 	"github.com/ahmetb/go-linq"
-	"github.com/conplementAG/copsctl/internal/common/commands"
 	"github.com/conplementAG/copsctl/internal/common/file_processing"
-	"github.com/conplementAG/copsctl/internal/common/logging"
 )
 
-func UseContext(contextName string) error {
-	command := "kubectl config use-context " + contextName
-	_, err := commands.ExecuteCommand(commands.Create(command))
-	return err
-}
-
-func GetCurrentConfig() (*ConfigResponse, error) {
+func GetCurrentConfig(executor commands.Executor) (*ConfigResponse, error) {
 	command := "kubectl config view -o json"
-	out, err := commands.ExecuteCommand(commands.Create(command))
+	out, err := executor.Execute(command)
 
 	if err != nil {
 		return nil, err
@@ -29,21 +23,21 @@ func GetCurrentConfig() (*ConfigResponse, error) {
 	return config, nil
 }
 
-func PrintAllCopsNamespaces() error {
+func PrintAllCopsNamespaces(executor commands.Executor) error {
 	command := "kubectl get copsnamespaces"
-	out, err := commands.ExecuteCommand(commands.Create(command))
+	out, err := executor.Execute(command)
 
 	if err != nil {
 		return err
 	}
 
-	logging.Info("\nNamespaces:\n" + out)
+	logrus.Info("\nNamespaces:\n" + out)
 	return nil
 }
 
-func GetCopsNamespace(namespace string) (*CopsNamespaceResponse, error) {
+func GetCopsNamespace(executor commands.Executor, namespace string) (*CopsNamespaceResponse, error) {
 	command := "kubectl get CopsNamespace " + namespace + " -o json"
-	out, err := commands.ExecuteCommand(commands.Create(command))
+	out, err := executor.Execute(command)
 
 	if err != nil {
 		return nil, err
@@ -54,37 +48,37 @@ func GetCopsNamespace(namespace string) (*CopsNamespaceResponse, error) {
 	return response, nil
 }
 
-func Apply(filepath string) (string, error) {
+func Apply(executor commands.Executor, filepath string) (string, error) {
 	command := "kubectl apply -f " + filepath
-	return commands.ExecuteCommandLongRunning(commands.Create(command))
+	return executor.ExecuteWithProgressInfo(command)
 }
 
-func Delete(filepath string) (string, error) {
+func Delete(executor commands.Executor, filepath string) (string, error) {
 	command := "kubectl delete --wait -f " + filepath
-	return commands.ExecuteCommandLongRunning(commands.Create(command))
+	return executor.ExecuteWithProgressInfo(command)
 }
 
-func ApplyString(content string) (string, error) {
+func ApplyString(executor commands.Executor, content string) (string, error) {
 	temporaryDirectory, temporaryFile := file_processing.WriteStringToTemporaryFile(content, "resource.yaml")
 	defer file_processing.DeletePath(temporaryDirectory)
 
-	return Apply(temporaryFile)
+	return Apply(executor, temporaryFile)
 }
 
-func DeleteString(content string) (string, error) {
+func DeleteString(executor commands.Executor, content string) (string, error) {
 	temporaryDirectory, temporaryFile := file_processing.WriteStringToTemporaryFile(content, "resource.yaml")
 	defer file_processing.DeletePath(temporaryDirectory)
 
-	return Delete(temporaryFile)
+	return Delete(executor, temporaryFile)
 }
 
-func CanIGetPods(namespace string) bool {
-	data, err := commands.ExecuteCommandLongRunning(commands.Create("kubectl auth can-i get pods -n " + namespace))
+func CanIGetPods(executor commands.Executor, namespace string) bool {
+	data, err := executor.ExecuteWithProgressInfo("kubectl auth can-i get pods -n " + namespace)
 	return err == nil && strings.TrimSuffix(data, "\n") == "yes"
 }
 
-func GetCurrentMasterPlaneFqdn() (string, error) {
-	currentConfig, err := GetCurrentConfig()
+func GetCurrentMasterPlaneFqdn(executor commands.Executor) (string, error) {
+	currentConfig, err := GetCurrentConfig(executor)
 
 	if err != nil {
 		return "", err
@@ -99,22 +93,4 @@ func GetCurrentMasterPlaneFqdn() (string, error) {
 	}).(Cluster)
 
 	return currentClusterResponse.Cluster.Server, nil
-}
-
-func CreateServiceAccount(namespace string, accountName string) error {
-	command := "kubectl create serviceaccount " + accountName + " --namespace " + namespace
-	_, err := commands.ExecuteCommand(commands.Create(command))
-	return err
-}
-
-func RemoveServiceAccount(namespace string, accountName string) error {
-	command := "kubectl delete serviceaccount " + accountName + " --namespace " + namespace
-	_, err := commands.ExecuteCommand(commands.Create(command))
-	return err
-}
-
-func DeleteDeployment(deploymentName string, namespace string) error {
-	command := "kubectl delete deployment " + deploymentName + " -n " + namespace
-	_, err := commands.ExecuteCommand(commands.Create(command))
-	return err
 }
