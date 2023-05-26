@@ -3,8 +3,8 @@ package connection
 import (
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
-	"github.com/conplementag/cops-hq/pkg/commands"
-	"github.com/conplementag/cops-hq/pkg/hq"
+	"github.com/conplementag/cops-hq/v2/pkg/commands"
+	"github.com/conplementag/cops-hq/v2/pkg/hq"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"

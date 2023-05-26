@@ -3,8 +3,8 @@ package main
 import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementAG/copsctl/internal/namespace"
-	"github.com/conplementag/cops-hq/pkg/cli"
-	"github.com/conplementag/cops-hq/pkg/hq"
+	"github.com/conplementag/cops-hq/v2/pkg/cli"
+	"github.com/conplementag/cops-hq/v2/pkg/hq"
 )
 
 func createNamespaceCommand(hq hq.HQ) {

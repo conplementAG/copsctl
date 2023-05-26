@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementAG/copsctl/internal/connection"
-	"github.com/conplementag/cops-hq/pkg/hq"
+	"github.com/conplementag/cops-hq/v2/pkg/hq"
 )
 
 func createConnectCommand(hq hq.HQ) {
