@@ -22,6 +22,7 @@ func New(hq hq.HQ) *Orchestrator {
 		executor: hq.GetExecutor(),
 	}
 }
+
 func (o *Orchestrator) ShowClusterInfo() {
 	o.showInfo(Cluster)
 }
@@ -37,9 +38,9 @@ func (o *Orchestrator) showInfo(typeName string) {
 		logrus.Infof("Reading the %s info ...", typeName)
 		logrus.Info("NOTE: you can use the " + flags.PrintToStdoutSilenceEverythingElse + " flag to silence these outputs (useful for automation)")
 
-		logrus.Info("===========================================================")
-		logrus.Infof("==================== %s Info:  =======================", typeName)
-		logrus.Info("===========================================================")
+		logrus.Info("===============================================================")
+		logrus.Infof("==================   %s info:  =======================", typeName)
+		logrus.Info("===============================================================")
 	}
 
 	result, err := o.executor.Execute(fmt.Sprintf("kubectl get configmap -n coreops-public -o jsonpath=\"{.data['%s-info\\.json']}\" coreops-info", typeName))
