@@ -1,15 +1,18 @@
 package connection
 
 import (
+	"errors"
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
+	"github.com/imroc/req"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v2"
 	"io"
+	"net/http"
 	"os"
 	"path/filepath"
 )
@@ -36,10 +39,24 @@ func (o *Orchestrator) Connect() {
 
 	validateConnectionString(connectionString, environmentTag, isTechnicalAccount)
 
-	blob := downloadBlob(o, connectionString)
-	validateDownloadedBlob(blob, isTechnicalAccount)
+	blob, err := downloadBlob(connectionString)
 
-	configs := parseConfigs(blob)
+	if err != nil {
+		panic(fmt.Sprintf("%s\nThis can potentially have the following reasons:\n"+
+			" - your current internet connection is unstable\n"+
+			" - the provided connection string is invalid (double check it and try to quote it in the command)\n"+
+			" - the provided connection string is expired\n"+
+			" - you are not connected to the VPN (with force tunneling) or DirectAccess of the corporate network\n"+
+			" - your host IP running this command is not allowed to access the resource providing the kube config due to firewall restrictions", err.Error()))
+	}
+
+	configs, err := getKubeConfigsContainer(blob)
+
+	if err != nil {
+		panic(fmt.Sprintf("Unknown KubeConfigsContainer format: %s", err.Error()))
+	}
+
+	validateKubeConfigsContainer(configs, isTechnicalAccount)
 
 	if !printConfigSilenceEverythingElse {
 		logrus.Info("Using configuration last modified at " + configs.ModifiedAt)
@@ -83,26 +100,34 @@ func (o *Orchestrator) Connect() {
 	}
 }
 
-func downloadBlob(o *Orchestrator, connectionString string) string {
-	blob, err := o.executor.ExecuteSilent("curl -s --retry 3 " + connectionString)
-
+func downloadBlob(connectionString string) (string, error) {
+	res, err := req.Get(connectionString)
 	if err != nil {
-		panic(err)
+		return "", errors.New(fmt.Sprint("HTTP request to download connection string content failed."))
 	}
 
-	return blob
+	responseStatusCode := res.Response().StatusCode
+	responseStatus := res.Response().Status
+
+	if responseStatusCode != http.StatusOK {
+		return "", errors.New(fmt.Sprintf("HTTP request to download connection string content failed with non-success status code: %s\n%s", responseStatus, res.String()))
+	}
+
+	blob := res.String()
+
+	return blob, nil
 }
 
-func parseConfigs(yamlString string) KubeConfigsContainerV1 {
-	var config KubeConfigsContainerV1
+func getKubeConfigsContainer(yamlString string) (KubeConfigsContainerV1, error) {
+	var container KubeConfigsContainerV1
 
-	err := yaml.Unmarshal([]byte(yamlString), &config)
+	err := yaml.Unmarshal([]byte(yamlString), &container)
 
 	if err != nil {
-		panic(err)
+		return KubeConfigsContainerV1{}, err
 	}
 
-	return config
+	return container, nil
 }
 
 func saveKubeConfigToFile(configYaml string) {
@@ -116,7 +141,8 @@ func saveKubeConfigToFile(configYaml string) {
 
 	// check if file already there, make a backup
 	if _, err := os.Stat(configFilePath); err == nil {
-		copyFile(configFilePath, filepath.Join(home, ".kube", "copsctl_backup_config"))
+		err := copyFile(configFilePath, filepath.Join(home, ".kube", "copsctl_backup_config"))
+		panicOnError(err)
 	}
 
 	err = os.WriteFile(configFilePath, []byte(configYaml), 0600)
