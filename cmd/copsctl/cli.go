@@ -6,5 +6,4 @@ func createCommands(hq hq.HQ) {
 	createNamespaceCommand(hq)
 	createInfoCommands(hq)
 	createConnectCommand(hq)
-	createAzureDevopsCommand(hq)
 }

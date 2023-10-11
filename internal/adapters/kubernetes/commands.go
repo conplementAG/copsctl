@@ -6,7 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"strings"
 
-	"github.com/ahmetb/go-linq"
 	"github.com/conplementAG/copsctl/internal/common/file_processing"
 )
 
@@ -75,22 +74,4 @@ func DeleteString(executor commands.Executor, content string) (string, error) {
 func CanIGetPods(executor commands.Executor, namespace string) bool {
 	data, err := executor.ExecuteWithProgressInfo("kubectl auth can-i get pods -n " + namespace)
 	return err == nil && strings.TrimSuffix(data, "\n") == "yes"
-}
-
-func GetCurrentMasterPlaneFqdn(executor commands.Executor) (string, error) {
-	currentConfig, err := GetCurrentConfig(executor)
-
-	if err != nil {
-		return "", err
-	}
-
-	currentContextName := currentConfig.CurrentContext
-	currentContextResponse := linq.From(currentConfig.Contexts).SingleWithT(func(c Context) bool {
-		return c.Name == currentContextName
-	}).(Context)
-	currentClusterResponse := linq.From(currentConfig.Clusters).SingleWithT(func(c Cluster) bool {
-		return c.Name == currentContextResponse.Context.Cluster
-	}).(Cluster)
-
-	return currentClusterResponse.Cluster.Server, nil
 }
