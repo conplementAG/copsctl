@@ -61,6 +61,7 @@ metadata:
 spec:
 {{ usernames }}
 {{ serviceAccounts }}
-  projectCostCenter: "{{ projectCostCenter }}"
-  projectName: "{{ projectName }}"
+  project:
+    costCenter: "{{ projectCostCenter }}"
+    name: "{{ projectName }}"
 `
