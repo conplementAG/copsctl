@@ -55,7 +55,7 @@ func (o *Orchestrator) Delete() {
 		return
 	}
 
-	copsNamespace := renderTemplate(namespaceName, namespace.Spec.NamespaceAdminUsers, namespace.Spec.NamespaceAdminServiceAccounts, namespace.GetProjectName(), namespace.GetProjectCostCenter())
+	copsNamespace := renderTemplate(namespaceName, namespace.Spec.NamespaceAdminUsers, namespace.Spec.NamespaceAdminServiceAccounts, namespace.Spec.Project.Name, namespace.Spec.Project.CostCenter)
 
 	_, error := kubernetes.DeleteString(o.executor, copsNamespace)
 
