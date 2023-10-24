@@ -32,7 +32,7 @@ func (o *Orchestrator) Create() {
 
 	users := parseUsernames(viper.GetString("users"))
 	serviceAccounts := parseServiceAccounts(viper.GetString("service-accounts"))
-	copsNamespace := renderTemplate(namespaceName, users, serviceAccounts)
+	copsNamespace := renderTemplate(namespaceName, users, serviceAccounts, viper.GetString(flags.ProjectName), viper.GetString(flags.ProjectCostCenter))
 
 	_, err := kubernetes.ApplyString(o.executor, copsNamespace)
 
@@ -55,7 +55,7 @@ func (o *Orchestrator) Delete() {
 		return
 	}
 
-	copsNamespace := renderTemplate(namespaceName, namespace.Spec.NamespaceAdminUsers, namespace.Spec.NamespaceAdminServiceAccounts)
+	copsNamespace := renderTemplate(namespaceName, namespace.Spec.NamespaceAdminUsers, namespace.Spec.NamespaceAdminServiceAccounts, namespace.GetProjectName(), namespace.GetProjectCostCenter())
 
 	_, error := kubernetes.DeleteString(o.executor, copsNamespace)
 
