@@ -69,7 +69,7 @@ func (o *Orchestrator) AddServiceAccounts() {
 		}
 	}
 
-	copsNamespace := renderTemplate(namespaceName, existingUsers, relevantAccounts, namespace.GetProjectName(), namespace.GetProjectCostCenter())
+	copsNamespace := renderTemplate(namespaceName, existingUsers, relevantAccounts, namespace.Spec.Project.Name, namespace.Spec.Project.CostCenter)
 
 	_, err = kubernetes.ApplyString(o.executor, copsNamespace)
 
@@ -113,7 +113,7 @@ func (o *Orchestrator) RemoveServiceAccounts() {
 		}
 	}
 
-	copsnamespace := renderTemplate(namespaceName, existingUsers, resultingAccounts, namespace.GetProjectName(), namespace.GetProjectCostCenter())
+	copsnamespace := renderTemplate(namespaceName, existingUsers, resultingAccounts, namespace.Spec.Project.Name, namespace.Spec.Project.CostCenter)
 
 	_, err = kubernetes.ApplyString(o.executor, copsnamespace)
 
