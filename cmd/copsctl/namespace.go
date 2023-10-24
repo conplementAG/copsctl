@@ -37,6 +37,7 @@ func createNamespaceCreateCommand(o *namespace.Orchestrator, cmd cli.Command) {
 	addUsersParam(namespaceCreateCmd)
 	addServiceAccountsParam(namespaceCreateCmd)
 	addNameParam(namespaceCreateCmd)
+	addProjectParam(namespaceCreateCmd)
 }
 
 func createNamespaceDeleteCommand(o *namespace.Orchestrator, cmd cli.Command) {
@@ -137,4 +138,9 @@ func addServiceAccountsParam(cmd cli.Command) {
 
 func addNameParam(cmd cli.Command) {
 	cmd.AddPersistentParameterString(flags.Name, "", true, "n", "Name of the namespace")
+}
+
+func addProjectParam(cmd cli.Command) {
+	cmd.AddPersistentParameterString(flags.ProjectName, "", true, "p", "Name of the project hosted within namespace")
+	cmd.AddPersistentParameterString(flags.ProjectCostCenter, "", true, "c", "Costcenter project is billed")
 }

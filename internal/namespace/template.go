@@ -44,18 +44,23 @@ func renderServiceAccounts(serviceAccounts []kubernetes.CopsServiceAccount) stri
 	return accountsList
 }
 
-func renderTemplate(namespaceName string, userNames []string, serviceAccounts []kubernetes.CopsServiceAccount) string {
+func renderTemplate(namespaceName string, userNames []string, serviceAccounts []kubernetes.CopsServiceAccount, projectName string, projectCostCenter string) string {
 	copsnamespace := strings.Replace(copsNamespaceTemplate, "{{ namespaceName }}", namespaceName, -1)
 	copsnamespace = strings.Replace(copsnamespace, "{{ usernames }}", renderUsernames(userNames), -1)
 	copsnamespace = strings.Replace(copsnamespace, "{{ serviceAccounts }}", renderServiceAccounts(serviceAccounts), -1)
+	copsnamespace = strings.Replace(copsnamespace, "{{ projectCostCenter }}", projectCostCenter, -1)
+	copsnamespace = strings.Replace(copsnamespace, "{{ projectName }}", projectName, -1)
 	return copsnamespace
 }
 
 const copsNamespaceTemplate string = `
-apiVersion: coreops.conplement.cloud/v1
+apiVersion: coreops.conplement.cloud/v2
 kind: CopsNamespace
 metadata:
   name: {{ namespaceName }}
 spec:
 {{ usernames }}
-{{ serviceAccounts }}`
+{{ serviceAccounts }}
+  projectCostCenter: "{{ projectCostCenter }}"
+  projectName: "{{ projectName }}"
+`

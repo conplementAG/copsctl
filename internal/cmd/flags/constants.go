@@ -6,6 +6,9 @@ const Name = "name"
 const Users = "users"
 const ServiceAccounts = "service-accounts"
 
+const ProjectName = "projectname"
+const ProjectCostCenter = "projectcostcenter"
+
 const EnvironmentTag = "environment-tag"
 
 const ConnectionString = "connection-string"
