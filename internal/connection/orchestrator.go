@@ -3,6 +3,7 @@ package connection
 import (
 	"errors"
 	"fmt"
+	"github.com/avast/retry-go/v4"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
@@ -15,6 +16,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
+	"time"
 )
 
 type Orchestrator struct {
@@ -101,9 +104,10 @@ func (o *Orchestrator) Connect() {
 }
 
 func downloadBlob(connectionString string) (string, error) {
-	res, err := req.Get(connectionString)
+	res, err := tryGetBlobContent(connectionString)
+
 	if err != nil {
-		return "", errors.New(fmt.Sprint("HTTP request to download connection string content failed."))
+		return "", errors.New(fmt.Sprintf("HTTP request to download connection string content failed. Error: %s", anonymizeConnectionStringInError(connectionString, err.Error())))
 	}
 
 	responseStatusCode := res.Response().StatusCode
@@ -116,6 +120,28 @@ func downloadBlob(connectionString string) (string, error) {
 	blob := res.String()
 
 	return blob, nil
+}
+
+func tryGetBlobContent(connectionString string) (*req.Resp, error) {
+	return retry.DoWithData(func() (*req.Resp, error) {
+		resp, err := req.Get(connectionString)
+		if err != nil {
+			return nil, err
+		}
+
+		return resp, nil
+	},
+		retry.Delay(time.Second),
+		retry.DelayType(retry.BackOffDelay),
+		retry.OnRetry(func(n uint, err error) {
+			logrus.Debugf("Retry %d - happend because of %s", n+1, err)
+		}),
+		retry.Attempts(3),
+	)
+}
+
+func anonymizeConnectionStringInError(connectionString string, error string) string {
+	return strings.Replace(error, connectionString, "<cluster_connection_string>", -1)
 }
 
 func getKubeConfigsContainer(yamlString string) (KubeConfigsContainerV1, error) {
