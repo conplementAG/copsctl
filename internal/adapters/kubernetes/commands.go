@@ -2,11 +2,10 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"github.com/conplementAG/copsctl/internal/common/file_processing"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/sirupsen/logrus"
 	"strings"
-
-	"github.com/conplementAG/copsctl/internal/common/file_processing"
 )
 
 func GetCurrentConfig(executor commands.Executor) (*ConfigResponse, error) {

@@ -6,4 +6,5 @@ func createCommands(hq hq.HQ) {
 	createNamespaceCommand(hq)
 	createInfoCommands(hq)
 	createConnectCommand(hq)
+	createCoreBuildCommands(hq)
 }

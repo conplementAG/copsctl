@@ -16,3 +16,6 @@ const TechnicalAccount = "technical-account"
 const Secondary = "secondary"
 const PrintToStdout = "print-to-stdout"
 const PrintToStdoutSilenceEverythingElse = "print-to-stdout-silence-everything-else"
+
+const ConfigFile = "config-file"
+const SopsConfigFile = "sops-config-file"
