@@ -4,6 +4,7 @@ cmd/copsctl/dist
 vendor
 .vscode
 .generated
+.idea/
 cmd/copsctl/copsctl
 
 cmd/copsctl/logs\.log

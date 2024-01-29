@@ -8,6 +8,13 @@ variable "region" {}
 // Identity
 ####################################
 variable "managed_identity_name" {}
+variable "role_assignments" {
+  type = map(object({
+    scope = string
+    role_definition_name  = string
+  }))
+  default = {}
+}
 
 ####################################
 // Network
@@ -20,3 +27,13 @@ variable "build_agent_pool_lb_name" {}
 // Buildagent Pool
 ####################################
 variable "build_agent_pool_name" {}
+
+####################################
+// Azure Devops Buildagent
+####################################
+variable "azure_devops_project_name" {}
+variable "azure_devops_service_connection_name" {}
+variable "azure_devops_pool_name" {}
+variable "azure_devops_desired_idle" {}
+variable "azure_devops_max_capacity" {}
+variable "azure_devops_ttl" {}
