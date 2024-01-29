@@ -1,0 +1,25 @@
+environment:
+  name: "?" # MANDATORY The name of the build environment. Name must be less or equal 12 char
+  subscription_id: "?" # MANDATORY The id of the subscription where to provision the cluster, vnet, etc.
+  tenant_id: "?" # MANDATORY The id of the tenant where the subscription is located
+  region: "francecentral" # MANDATORY. Make sure the core build infrastructure is deployed in different region than the infrastructure you plan to deploy with creatd agentpool
+
+security:
+  authorized_ip_ranges:
+    cidrs: ["195.226.180.98"] # MANDATORY.
+  role_assignments:
+    - scope: "?" # Azure resource id for the scope the role should be applied e.g. /subscriptions/<subscription_id>/resourceGroups/<resource_group_name>/providers/Microsoft.ContainerRegistry/registries/<registry_name>
+      role_definition_name: "?" # Role definition to be applied e.g. AcrPush
+
+azure_devops:
+  # MANDATORY Personal Access Token to create agent pool with permissions:
+  # - Agent Pools (Read & manage)
+  # - Service Connections (Read, query & manage)
+  # - Project and Team (Read)
+  pat_secret: ""
+  organisation_name: "" # MANDATORY OrganisationName in azure devops
+  project_name: "" # MANDATORY Project name in azure devops
+  pool_settings:
+    desired_idle: 0 # MANDATORY Number of agents to have ready waiting for jobs
+    max_capacity: 5 # MANDATORY Maximum number of agents that will exist in the elastic pool
+    time_to_live_minutes: 30 # MANDATORY The minimum time in minutes to keep idle agents alive
