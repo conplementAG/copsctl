@@ -27,11 +27,13 @@ type Orchestrator struct {
 	shortNamingService naming.Service
 	longNamingService  naming.Service
 	resourceGroupName  string
+	autoApprove        bool
 }
 
 func New(hq hq.HQ) (*Orchestrator, error) {
 	configFile := viper.GetString(flags.ConfigFile)
 	sopsConfigFile := viper.GetString(flags.SopsConfigFile)
+	autoApprove := viper.GetBool(flags.AutoApproveFlag)
 	cryptographer := security.NewSopsCryptographer(sopsConfigFile)
 	config, err := file_processing.LoadEncryptedFile[configuration.SourceConfig](configFile, cryptographer)
 	common.FatalOnError(err)
@@ -57,6 +59,7 @@ func New(hq hq.HQ) (*Orchestrator, error) {
 		shortNamingService: *shortNamingService,
 		longNamingService:  *longNamingService,
 		resourceGroupName:  resourceGroupName,
+		autoApprove:        autoApprove,
 	}, nil
 }
 
@@ -69,7 +72,7 @@ func (o *Orchestrator) CreateInfrastructure() {
 	tf, err := o.initializeTerraform()
 	common.FatalOnError(err)
 
-	err = tf.DeployFlow(false, false, false)
+	err = tf.DeployFlow(false, false, o.autoApprove)
 	common.FatalOnError(err)
 
 	publicEgressIp, err := tf.Output(common.ToPtr("public_egress_ip"))
@@ -94,7 +97,7 @@ func (o *Orchestrator) DestroyInfrastructure() {
 	tf, err := o.initializeTerraform()
 	common.FatalOnError(err)
 
-	err = tf.DestroyFlow(false, false, false)
+	err = tf.DestroyFlow(false, false, o.autoApprove)
 	common.FatalOnError(err)
 
 	err = o.cleanup()
