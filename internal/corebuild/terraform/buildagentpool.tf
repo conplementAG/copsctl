@@ -36,6 +36,8 @@ resource "azuredevops_elastic_pool" "default" {
   time_to_live_minutes   = var.azure_devops_ttl
   max_capacity           = var.azure_devops_max_capacity
   azure_resource_id      = azurerm_linux_virtual_machine_scale_set.buildagentpool.id
+
+  
   depends_on             = [azurerm_federated_identity_credential.default]
 }
 

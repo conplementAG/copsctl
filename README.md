@@ -33,3 +33,10 @@ For contributing to the project, and for development instructions, please check 
 ### Show help
 
 `copsctl --help`
+
+### Show environment or cluster information
+
+`copsctl info cluster`
+`copsctl info environment`
+
+### [Manage build agent pool](internal/corebuild/readme.md)
