@@ -4,7 +4,6 @@ cmd/copsctl/dist
 vendor
 .vscode
 .generated
-.idea/
 cmd/copsctl/copsctl
 
 cmd/copsctl/logs\.log
@@ -18,3 +17,6 @@ cmd/copsctl/copsctl\.log
 *.tfvars
 terraform.tfstate
 terraform.tfstate.backup
+
+# corebuild
+internal/corebuild/configuration/cgo.yaml
