@@ -19,3 +19,4 @@ const PrintToStdoutSilenceEverythingElse = "print-to-stdout-silence-everything-e
 
 const ConfigFile = "config-file"
 const SopsConfigFile = "sops-config-file"
+const AutoApproveFlag = "auto-approve"
