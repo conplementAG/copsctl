@@ -2,10 +2,10 @@ package corebuild
 
 import (
 	"fmt"
+	"github.com/conplementAG/copsctl/internal/adapters/azure"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementAG/copsctl/internal/common"
 	"github.com/conplementAG/copsctl/internal/common/file_processing"
-	"github.com/conplementAG/copsctl/internal/corebuild/adapters/azure"
 	"github.com/conplementAG/copsctl/internal/corebuild/configuration"
 	"github.com/conplementAG/copsctl/internal/corebuild/security"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
@@ -75,8 +75,12 @@ func (o *Orchestrator) CreateInfrastructure() {
 	publicEgressIp, err := tf.Output(common.ToPtr("public_egress_ip"))
 	common.FatalOnError(err)
 
+	managedIdentityName, err := tf.Output(common.ToPtr("managed_identity_name"))
+	common.FatalOnError(err)
+
 	logrus.Info("================== Build agent pool created  ====================")
 	logrus.Infof("Make sure you add public egress ip %s to all resources firewall access lists build agent needs access", publicEgressIp)
+	logrus.Infof("Make sure you add build agent managed identity %s to all resources permissions needed", managedIdentityName)
 	logrus.Infof("Check configuration here: %s", fmt.Sprintf("https://dev.azure.com/%s/%s/_settings/agentqueues", o.config.AzureDevops.OrganisationName, o.config.AzureDevops.ProjectName))
 	logrus.Info("=================================================================")
 }
