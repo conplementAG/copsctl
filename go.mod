@@ -5,12 +5,11 @@ go 1.21
 toolchain go1.21.3
 
 require (
-	github.com/ahmetb/go-linq/v3 v3.2.0
+	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.5.1
+	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.2.0
 	github.com/avast/retry-go/v4 v4.5.1
 	github.com/conplementag/cops-hq/v2 v2.14.0
-	github.com/google/uuid v1.6.0
 	github.com/imroc/req v0.3.2
-	github.com/microsoft/azure-devops-go-api/azuredevops/v7 v7.1.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/rs/xid v1.5.0
 	github.com/sirupsen/logrus v1.9.3
@@ -22,17 +21,17 @@ require (
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azcore v1.9.1 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.5.1 // indirect
 	github.com/Azure/azure-sdk-for-go/sdk/internal v1.5.1 // indirect
-	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources v1.2.0 // indirect
 	github.com/AzureAD/microsoft-authentication-library-for-go v1.2.1 // indirect
 	github.com/Masterminds/semver/v3 v3.2.1 // indirect
+	github.com/ahmetb/go-linq/v3 v3.2.0 // indirect
 	github.com/briandowns/spinner v1.23.0 // indirect
 	github.com/common-nighthawk/go-figure v0.0.0-20210622060536-734e95fb86be // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fatih/color v1.16.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/golang-jwt/jwt/v5 v5.2.0 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/kylelemons/godebug v1.1.0 // indirect
