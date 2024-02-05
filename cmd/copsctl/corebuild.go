@@ -46,8 +46,8 @@ func createCoreBuildDestroyCommand(cmd cli.Command, hq hq.HQ) {
 func addConfigFileParam(cmd cli.Command) {
 	cmd.AddPersistentParameterString(flags.ConfigFile, "", true, "f",
 		"Yaml config for creating core build infrastructure.")
-	cmd.AddPersistentParameterString(flags.SopsConfigFile, "", true, "c",
-		"Configuration file path for sops configuration file. If not given sops config is expected next to config file.")
+	cmd.AddPersistentParameterString(flags.SopsConfigFile, "", false, "c",
+		"Configuration file path for sops configuration file. If not given sops config is expected next to config file named '.sops.yaml'.")
 	cmd.AddPersistentParameterBool(flags.AutoApproveFlag, false, false, "", "Set this flag to automatically apply infrastructure changes without any user confirmation."+
 		"Use this for creating the infrastructure from a CI/CD environment.")
 }
