@@ -10,16 +10,16 @@ import (
 
 func createCoreBuildCommands(hq hq.HQ) {
 	coreBuildCmdGroup := hq.GetCli().AddBaseCommand("build",
-		"Command group for core build tasks",
-		"Use this command to manipulate core build infrastructure", nil)
+		"Command group for core build tasks.",
+		"Use this command to manipulate core build infrastructure.", nil)
 
 	createCoreBuildCreateCommand(coreBuildCmdGroup, hq)
 	createCoreBuildDestroyCommand(coreBuildCmdGroup, hq)
 }
 
 func createCoreBuildCreateCommand(cmd cli.Command, hq hq.HQ) {
-	createCoreBuildCmd := cmd.AddCommand("create", "Create core build infrastructure",
-		"Use this command to create core build infrastructure including azure resources and azure devops configurations",
+	createCoreBuildCmd := cmd.AddCommand("create", "Create core build infrastructure.",
+		"Use this command to create core build infrastructure including azure resources and azure devops configurations.",
 		func() {
 			orchestrator, err := corebuild.New(hq)
 			common.FatalOnError(err)
@@ -31,8 +31,8 @@ func createCoreBuildCreateCommand(cmd cli.Command, hq hq.HQ) {
 }
 
 func createCoreBuildDestroyCommand(cmd cli.Command, hq hq.HQ) {
-	createCoreBuildCmd := cmd.AddCommand("destroy", "Destroy core build infrastructure",
-		"Use this command to destroy core build infrastructure including azure resources and azure devops configurations",
+	createCoreBuildCmd := cmd.AddCommand("destroy", "Destroy core build infrastructure.",
+		"Use this command to destroy core build infrastructure including azure resources and azure devops configurations.",
 		func() {
 			orchestrator, err := corebuild.New(hq)
 			common.FatalOnError(err)
@@ -45,9 +45,9 @@ func createCoreBuildDestroyCommand(cmd cli.Command, hq hq.HQ) {
 
 func addConfigFileParam(cmd cli.Command) {
 	cmd.AddPersistentParameterString(flags.ConfigFile, "", true, "f",
-		"Yaml config for createing core build infrastructure")
+		"Yaml config for creating core build infrastructure.")
 	cmd.AddPersistentParameterString(flags.SopsConfigFile, "", true, "c",
 		"Configuration file path for sops configuration file. If not given sops config is expected next to config file.")
-	cmd.AddPersistentParameterBool(flags.AutoApproveFlag, false, false, "", "Set this flag to automatically apply infrastructure changes without any user interruption."+
+	cmd.AddPersistentParameterBool(flags.AutoApproveFlag, false, false, "", "Set this flag to automatically apply infrastructure changes without any user confirmation."+
 		"Use this for creating the infrastructure from a CI/CD environment.")
 }
