@@ -6,9 +6,13 @@ vendor
 .generated
 cmd/copsctl/copsctl
 
-cmd/copsctl/logs\.log
+cmd/copsctl/logs.log
 
-cmd/copsctl/copsctl\.log
+cmd/copsctl/copsctl.log
+
+go.work
+
+go.work.sum
 
 # ignore terrform related files
 .plans/
