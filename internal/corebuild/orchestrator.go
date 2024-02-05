@@ -32,12 +32,21 @@ type Orchestrator struct {
 
 func New(hq hq.HQ) (*Orchestrator, error) {
 	configFile := viper.GetString(flags.ConfigFile)
-	sopsConfigFile := viper.GetString(flags.SopsConfigFile)
 	autoApprove := viper.GetBool(flags.AutoApproveFlag)
-	cryptographer := security.NewSopsCryptographer(sopsConfigFile)
-	config, err := file_processing.LoadEncryptedFile[configuration.SourceConfig](configFile, cryptographer)
-	common.FatalOnError(err)
 
+	sopsConfigFile := viper.GetString(flags.SopsConfigFile)
+	if sopsConfigFile == "" {
+		sopsConfigFile = filepath.Join(filepath.Dir(configFile), ".sops.yaml")
+	}
+	cryptographer, err := security.NewSopsCryptographer(sopsConfigFile)
+	if err != nil {
+		return nil, err
+	}
+
+	config, err := file_processing.LoadEncryptedFile[configuration.SourceConfig](configFile, cryptographer)
+	if err != nil {
+		return nil, err
+	}
 	shortNamingService, err := naming.New("cctl", config.Environment.Region, config.Environment.Name, "cb", "")
 	if err != nil {
 		return nil, err
