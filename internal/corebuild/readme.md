@@ -5,7 +5,7 @@ linux based with docker support. Teams creating build agent pools are responsibl
 
 ## Preconditions
 Required tools
-- Terraform >= 1.6
+- Terraform >= 1.7
 - Azure Cli >= 2.56.0
 - Sops >= 3.8.1
 
