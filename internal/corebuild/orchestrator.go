@@ -1,6 +1,8 @@
 package corebuild
 
 import (
+	"embed"
+	"errors"
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/adapters/azure"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
@@ -20,6 +22,9 @@ import (
 	"path/filepath"
 )
 
+//go:embed terraform/*
+var terraformDirectory embed.FS
+
 type Orchestrator struct {
 	hq                 hq.HQ
 	executor           commands.Executor
@@ -28,6 +33,7 @@ type Orchestrator struct {
 	longNamingService  naming.Service
 	resourceGroupName  string
 	autoApprove        bool
+	cleanupActions     []func() error
 }
 
 func New(hq hq.HQ) (*Orchestrator, error) {
@@ -90,6 +96,9 @@ func (o *Orchestrator) CreateInfrastructure() {
 	managedIdentityName, err := tf.Output(common.ToPtr("managed_identity_name"))
 	common.FatalOnError(err)
 
+	err = o.runCleanupActions()
+	common.FatalOnError(err)
+
 	logrus.Info("================== Build agent pool created  ====================")
 	logrus.Infof("Make sure you add public egress ip %s to all resources firewall access lists build agent needs access", publicEgressIp)
 	logrus.Infof("Make sure you add build agent managed identity %s to all resources permissions needed", managedIdentityName)
@@ -110,6 +119,9 @@ func (o *Orchestrator) DestroyInfrastructure() {
 	common.FatalOnError(err)
 
 	err = o.cleanup()
+	common.FatalOnError(err)
+
+	err = o.runCleanupActions()
 	common.FatalOnError(err)
 
 	logrus.Info("================== Build agent pool destroyed  ====================")
@@ -148,13 +160,19 @@ func (o *Orchestrator) initializeTerraform() (terraform.Terraform, error) {
 		return nil, err
 	}
 
+	tempDir, err := file_processing.CreateTempDirectory(terraformDirectory, "terraform")
+	o.cleanupActions = append(o.cleanupActions, func() error { return file_processing.DeletePath(tempDir) })
+	if err != nil {
+		return nil, err
+	}
+
 	tf := terraform.New(o.executor, "core-build",
 		o.config.Environment.SubscriptionID,
 		o.config.Environment.TenantID,
 		o.config.Environment.Region,
 		o.resourceGroupName,
 		terraformStorageAccountName,
-		filepath.Join(hq.ProjectBasePath, "internal", "corebuild", "terraform"),
+		tempDir,
 		backendStorageSettings,
 		terraform.DefaultDeploymentSettings)
 	err = tf.Init()
@@ -223,6 +241,22 @@ func (o *Orchestrator) cleanup() error {
 	}
 
 	return azureAdapter.RemoveResourceGroup(o.resourceGroupName)
+}
+
+func (o *Orchestrator) runCleanupActions() error {
+	var errs []string
+
+	for _, f := range o.cleanupActions {
+		if err := f(); err != nil {
+			errs = append(errs, err.Error())
+		}
+	}
+
+	if len(errs) > 0 {
+		return errors.New("combined error: " + fmt.Sprint(errs))
+	}
+
+	return nil
 }
 
 type roleAssignment struct {
