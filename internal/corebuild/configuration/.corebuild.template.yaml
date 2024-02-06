@@ -7,8 +7,8 @@ environment:
 security:
   authorized_ip_ranges:
     cidrs:
-    - "195.226.180.98" # CP primary static IP
-    - "87.128.42.228" # CP secondary static IP
+    - "x.x.x.x"
+    - "y.y.y.y"
   # OPTIONAL Role assignments can be used to apply role assignments here for resources with lifecycle external to build agent release process
   # Given roles and scopes will be assigned to managed identity created. Identity is used in build agent vmss
   role_assignments:
