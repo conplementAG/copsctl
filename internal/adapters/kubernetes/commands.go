@@ -2,6 +2,7 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"github.com/conplementAG/copsctl/internal/common"
 	"github.com/conplementAG/copsctl/internal/common/file_processing"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/sirupsen/logrus"
@@ -58,14 +59,20 @@ func Delete(executor commands.Executor, filepath string) (string, error) {
 
 func ApplyString(executor commands.Executor, content string) (string, error) {
 	temporaryDirectory, temporaryFile := file_processing.WriteStringToTemporaryFile(content, "resource.yaml")
-	defer file_processing.DeletePath(temporaryDirectory)
+	defer func() {
+		err := file_processing.DeletePath(temporaryDirectory)
+		common.FatalOnError(err)
+	}()
 
 	return Apply(executor, temporaryFile)
 }
 
 func DeleteString(executor commands.Executor, content string) (string, error) {
 	temporaryDirectory, temporaryFile := file_processing.WriteStringToTemporaryFile(content, "resource.yaml")
-	defer file_processing.DeletePath(temporaryDirectory)
+	defer func() {
+		err := file_processing.DeletePath(temporaryDirectory)
+		common.FatalOnError(err)
+	}()
 
 	return Delete(executor, temporaryFile)
 }

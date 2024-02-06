@@ -5,13 +5,11 @@ import (
 	"fmt"
 	"github.com/conplementAG/copsctl/internal/common"
 	"github.com/conplementAG/copsctl/internal/corebuild/security"
+	"github.com/rs/xid"
 	"gopkg.in/yaml.v3"
-	"io"
+	"io/fs"
 	"os"
 	"path/filepath"
-	"strings"
-
-	"github.com/rs/xid"
 )
 
 // WriteStringToTemporaryFile writes the file contents into a file on a temporary disk location
@@ -26,36 +24,37 @@ func WriteStringToTemporaryFile(fileContents string, filePath string) (outputFol
 }
 
 // DeletePath deletes the file from the disk
-func DeletePath(filePath string) {
-	err := os.RemoveAll(filePath)
-	common.FatalOnError(err)
+func DeletePath(filePath string) error {
+	return os.RemoveAll(filePath)
 }
 
-// InterpolateStaticFiles loads all the files in given embed FS path.
+// CreateTempDirectory loads all the files in given embed FS path.
 // It depends on resource embedding, set by go:embed directive
-// Replaces the variables based on the given dictionary,
-// and returns the path to the generated directory where the results are stored
-func InterpolateStaticFiles(inputPathFs embed.FS, inputPathRootFolderName string, variables map[string]string) string {
-	directory, readDirError := inputPathFs.ReadDir(inputPathRootFolderName)
-	common.FatalOnError(readDirError)
+// Returns the path to the generated directory where the results are stored
+func CreateTempDirectory(inputPathFs embed.FS, inputPathRootFolderName string) (string, error) {
 
 	uniqueOutputFolder := createUniqueDirectory()
 
-	for _, file := range directory {
-		f, err := inputPathFs.Open(inputPathRootFolderName + "/" + file.Name())
-		common.FatalOnError(err)
-		filesContent, err := io.ReadAll(f)
-		common.FatalOnError(err)
-		fileContentString := string(filesContent)
-		for key, value := range variables {
-			fileContentString = strings.Replace(fileContentString, key, value, -1)
+	err := fs.WalkDir(inputPathFs, inputPathRootFolderName, func(path string, entry fs.DirEntry, err error) error {
+		if err != nil {
+			return err
 		}
+		relPath, err := filepath.Rel(inputPathRootFolderName, path)
+		if err != nil {
+			return err
+		}
+		destPath := filepath.Join(uniqueOutputFolder, relPath)
+		if entry.IsDir() {
+			return os.MkdirAll(destPath, 0755)
+		}
+		fileContent, err := inputPathFs.ReadFile(path)
+		if err != nil {
+			return err
+		}
+		return os.WriteFile(destPath, fileContent, 0644)
+	})
 
-		err = os.WriteFile(filepath.Join(uniqueOutputFolder, file.Name()), []byte(fileContentString), 0644)
-		common.FatalOnError(err)
-	}
-
-	return uniqueOutputFolder
+	return uniqueOutputFolder, err
 }
 
 func LoadEncryptedFile[T interface{}](filename string, cryptographer security.Cryptographer) (*T, error) {
