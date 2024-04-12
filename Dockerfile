@@ -1,15 +1,9 @@
-FROM golang:1.21.0-bullseye
+FROM golang:1.22.2-bullseye
 
 RUN apt-get update && \
     apt-get install lsb-release -y
 
 RUN apt-get install apt-transport-https
-
-# kubectl
-RUN curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
-RUN touch /etc/apt/sources.list.d/kubernetes.list 
-RUN echo "deb http://apt.kubernetes.io/ kubernetes-xenial main" | tee -a /etc/apt/sources.list.d/kubernetes.list
-RUN apt-get update && apt-get install -y kubectl
 
 RUN go version
 
@@ -26,6 +20,7 @@ RUN go test ./... --cover
 # complex build with all platforms, optionally create Release with latest tag in GitHub as well
 WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
 ARG GITHUB_TOKEN
-RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL http://git.io/goreleaser | VERSION=v0.155.0 bash -s -- release --skip-validate --rm-dist --skip-publish --snapshot ; else curl -sL http://git.io/goreleaser | VERSION=v0.155.0 bash -s -- release --skip-validate --rm-dist ; fi
+ARG GO_RELEASER_VERSION=v1.25.1
+RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL https://git.io/goreleaser | VERSION=${GO_RELEASER_VERSION} bash -s -- release --skip-validate --rm-dist --skip-publish --snapshot ; else curl -sL https://git.io/goreleaser | VERSION=${GO_RELEASER_VERSION} bash -s -- release --skip-validate --rm-dist ; fi
 
 CMD [ "/bin/bash" ]
