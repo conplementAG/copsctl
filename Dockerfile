@@ -21,6 +21,6 @@ RUN go test ./... --cover
 WORKDIR /go/src/github.com/conplementAG/copsctl/cmd/copsctl
 ARG GITHUB_TOKEN
 ARG GO_RELEASER_VERSION=v1.25.1
-RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL https://git.io/goreleaser | VERSION=${GO_RELEASER_VERSION} bash -s -- release --skip-validate --rm-dist --skip-publish --snapshot ; else curl -sL https://git.io/goreleaser | VERSION=${GO_RELEASER_VERSION} bash -s -- release --skip-validate --rm-dist ; fi
+RUN if [ "x$GITHUB_TOKEN" = "x" ] ; then curl -sL https://git.io/goreleaser | VERSION=${GO_RELEASER_VERSION} bash -s -- release --skip=validate,publish --snapshot ; else curl -sL https://git.io/goreleaser | VERSION=${GO_RELEASER_VERSION} bash -s -- release --skip=validate ; fi
 
 CMD [ "/bin/bash" ]
