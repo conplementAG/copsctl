@@ -9,7 +9,7 @@ snapshot:
   name_template: "{{ incpatch .Version }}-next"
 
 gomod:
-  proxy: true
+  proxy: false
 
 report_sizes: true
 
