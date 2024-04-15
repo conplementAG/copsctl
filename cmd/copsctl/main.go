@@ -9,7 +9,7 @@ import (
 
 func main() {
 	defer errorhandler()
-	hq := hq.NewQuiet("copsctl", "0.12.1", "copsctl.log")
+	hq := hq.NewQuiet("copsctl", "0.12.3", "copsctl.log")
 	createCommands(hq)
 
 	error_handling.PanicOnAnyError = true
