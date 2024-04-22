@@ -57,9 +57,9 @@ func (o *Orchestrator) Delete() {
 
 	copsNamespace := renderTemplate(namespaceName, namespace.Spec.NamespaceAdminUsers, namespace.Spec.NamespaceAdminServiceAccounts, namespace.Spec.Project.Name, namespace.Spec.Project.CostCenter)
 
-	_, error := kubernetes.DeleteString(o.executor, copsNamespace)
+	_, err = kubernetes.DeleteString(o.executor, copsNamespace)
 
-	if error != nil {
+	if err != nil {
 		panic("Deleting copsnamespace failed: " + err.Error())
 	}
 
