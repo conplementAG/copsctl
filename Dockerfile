@@ -1,4 +1,4 @@
-FROM golang:1.22.2-bullseye
+FROM golang:1.23.1-bullseye
 
 RUN apt-get update && \
     apt-get install lsb-release -y
