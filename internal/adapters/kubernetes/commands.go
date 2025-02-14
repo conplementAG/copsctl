@@ -9,21 +9,8 @@ import (
 	"strings"
 )
 
-func GetCurrentConfig(executor commands.Executor) (*ConfigResponse, error) {
-	command := "kubectl config view -o json"
-	out, err := executor.Execute(command)
-
-	if err != nil {
-		return nil, err
-	}
-
-	config := &ConfigResponse{}
-	json.Unmarshal([]byte(out), &config)
-	return config, nil
-}
-
 func PrintAllCopsNamespaces(executor commands.Executor) error {
-	command := "kubectl get copsnamespaces"
+	command := "kubectl get cns"
 	out, err := executor.Execute(command)
 
 	if err != nil {
@@ -34,17 +21,41 @@ func PrintAllCopsNamespaces(executor commands.Executor) error {
 	return nil
 }
 
+func ExistsCopsNamespace(executor commands.Executor, namespace string) (bool, error) {
+	response, err := GetCopsNamespace(executor, namespace)
+
+	if err != nil {
+		return false, err
+	}
+
+	if response != nil {
+		return true, nil
+	} else {
+		return false, nil
+	}
+}
+
 func GetCopsNamespace(executor commands.Executor, namespace string) (*CopsNamespaceResponse, error) {
-	command := "kubectl get CopsNamespace " + namespace + " -o json"
+	// ignore-not-found flag needed to avoid command to fail with hard panic mode (because of globally set PanicOnAnyError=true)
+	command := "kubectl get cns " + namespace + " -o json --ignore-not-found"
 	out, err := executor.Execute(command)
 
 	if err != nil {
 		return nil, err
 	}
 
-	response := &CopsNamespaceResponse{}
-	json.Unmarshal([]byte(out), &response)
-	return response, nil
+	out = strings.TrimSuffix(out, "\n")
+
+	if out == "" {
+		return nil, nil
+	} else {
+		response := &CopsNamespaceResponse{}
+		err := json.Unmarshal([]byte(out), &response)
+		if err != nil {
+			return nil, err
+		}
+		return response, nil
+	}
 }
 
 func Apply(executor commands.Executor, filepath string) (string, error) {
