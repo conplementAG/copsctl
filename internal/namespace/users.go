@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/sirupsen/logrus"
 	"strings"
@@ -28,7 +29,11 @@ func (o *Orchestrator) AddUsers() {
 	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
-		panic("Could not get the cops namespace " + err.Error())
+		panic("Get Cops namespace failed: " + err.Error())
+	}
+
+	if namespace == nil {
+		panic(fmt.Sprintf("Cops namespace '%s' does not exist", namespaceName))
 	}
 
 	relevantUsers := namespace.Spec.NamespaceAdminUsers
@@ -71,7 +76,11 @@ func (o *Orchestrator) RemoveUsers() {
 	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
-		panic("Could not get the cops namespace " + err.Error())
+		panic("Get Cops namespace failed: " + err.Error())
+	}
+
+	if namespace == nil {
+		panic(fmt.Sprintf("Cops namespace '%s' does not exist", namespaceName))
 	}
 
 	existingUsers := namespace.Spec.NamespaceAdminUsers
@@ -112,7 +121,11 @@ func (o *Orchestrator) ListUsers() {
 	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
-		panic("Could not get the cops namespace " + err.Error())
+		panic("Get Cops namespace failed: " + err.Error())
+	}
+
+	if namespace == nil {
+		panic(fmt.Sprintf("Cops namespace '%s' does not exist", namespaceName))
 	}
 
 	users := namespace.Spec.NamespaceAdminUsers

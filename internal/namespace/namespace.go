@@ -1,6 +1,7 @@
 package namespace
 
 import (
+	"fmt"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
@@ -27,6 +28,21 @@ func (o *Orchestrator) List() {
 	kubernetes.PrintAllCopsNamespaces(o.executor)
 }
 
+func (o *Orchestrator) Exists() {
+	namespaceName := viper.GetString(flags.Name)
+	result, err := kubernetes.ExistsCopsNamespace(o.executor, namespaceName)
+
+	if err != nil {
+		panic("Get Cops namespace failed: " + err.Error())
+	}
+
+	if result {
+		fmt.Println("yes")
+	} else {
+		fmt.Println("no")
+	}
+}
+
 func (o *Orchestrator) Create() {
 	namespaceName := viper.GetString(flags.Name)
 
@@ -51,7 +67,11 @@ func (o *Orchestrator) Delete() {
 	namespace, err := kubernetes.GetCopsNamespace(o.executor, namespaceName)
 
 	if err != nil {
-		logrus.Infof("Cops namespace %s does not exist", namespaceName)
+		panic("Get Cops namespace failed: " + err.Error())
+	}
+
+	if namespace == nil {
+		logrus.Infof("Cops namespace '%s' does not exist", namespaceName)
 		return
 	}
 
@@ -60,7 +80,7 @@ func (o *Orchestrator) Delete() {
 	_, err = kubernetes.DeleteString(o.executor, copsNamespace)
 
 	if err != nil {
-		panic("Deleting copsnamespace failed: " + err.Error())
+		panic("Deleting Cops namespace failed: " + err.Error())
 	}
 
 	logrus.Infof("Cops namespace %s successfully deleted", namespaceName)
