@@ -16,6 +16,7 @@ func createNamespaceCommand(hq hq.HQ) {
 	createNamespaceListCommand(namespaceOrchestrator, namespaceCmdGroup)
 	createNamespaceCreateCommand(namespaceOrchestrator, namespaceCmdGroup)
 	createNamespaceDeleteCommand(namespaceOrchestrator, namespaceCmdGroup)
+	createNamespaceExistsCommand(namespaceOrchestrator, namespaceCmdGroup)
 	createNamespaceUsersCommand(namespaceOrchestrator, namespaceCmdGroup)
 	createNamespaceServiceAccountsCommand(namespaceOrchestrator, namespaceCmdGroup)
 }
@@ -47,6 +48,15 @@ func createNamespaceDeleteCommand(o *namespace.Orchestrator, cmd cli.Command) {
 		})
 
 	addNameParam(namespaceDeleteCmd)
+}
+
+func createNamespaceExistsCommand(o *namespace.Orchestrator, cmd cli.Command) {
+	namespaceExistsCmd := cmd.AddCommand("exists", "Checks existence of a namespace",
+		"Use this command to check existence of a namespace.", func() {
+			o.Exists()
+		})
+
+	addNameParam(namespaceExistsCmd)
 }
 
 func createNamespaceUsersCommand(o *namespace.Orchestrator, cmd cli.Command) {
