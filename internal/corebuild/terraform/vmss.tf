@@ -21,7 +21,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
   upgrade_mode                = "Manual"
   single_placement_group      = false
   platform_fault_domain_count = 1
-  custom_data                 = filebase64("${path.module}/config/cloud-config.txt")
+  custom_data = filebase64("${path.module}/config/cloud-config.txt")
 
   # https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-automatic-upgrade#supported-os-images
   source_image_reference {
@@ -34,10 +34,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
   os_disk {
     storage_account_type = "StandardSSD_LRS"
     caching              = "ReadWrite"
+    disk_size_gb         = 128
   }
 
   identity {
-    type         = "UserAssigned"
+    type = "UserAssigned"
     identity_ids = [azurerm_user_assigned_identity.buildagentpool.id]
   }
 
@@ -46,9 +47,9 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
     primary = true
 
     ip_configuration {
-      name                                   = "internal"
-      primary                                = true
-      subnet_id                              = azurerm_subnet.buildagentpool.id
+      name      = "internal"
+      primary   = true
+      subnet_id = azurerm_subnet.buildagentpool.id
       load_balancer_backend_address_pool_ids = [azurerm_lb_backend_address_pool.buildagentpool.id]
     }
   }
