@@ -27,6 +27,7 @@ variable "build_agent_pool_lb_name" {}
 // Buildagent Pool
 ####################################
 variable "build_agent_pool_name" {}
+variable "build_agent_pool_node_disk_size_gb" {}
 
 ####################################
 // Azure Devops Buildagent

@@ -34,7 +34,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
   os_disk {
     storage_account_type = "StandardSSD_LRS"
     caching              = "ReadWrite"
-    disk_size_gb         = 128
+    disk_size_gb         = var.build_agent_pool_node_disk_size_gb == 0 ? null : var.build_agent_pool_node_disk_size_gb
   }
 
   identity {

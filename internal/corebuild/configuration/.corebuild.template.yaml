@@ -3,6 +3,7 @@ environment:
   subscription_id: "?" # MANDATORY The id of the subscription where to provision the resources
   tenant_id: "?" # MANDATORY The id of the tenant where the subscription is located. Try to avoid cross tenant scenarios. Build and application infrastructure should be im same tenant.
   region: "francecentral" # MANDATORY. Make sure the core build infrastructure is deployed in different region than the infrastructure you plan to deploy with the created agentpool.
+  node_disk_size_gb: 128 # [Optional] Default disk size is 30gb and can be extended if required
 
 security:
   authorized_ip_ranges:
