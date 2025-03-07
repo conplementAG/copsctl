@@ -1,8 +1,8 @@
 module github.com/conplementAG/copsctl
 
-go 1.23
+go 1.23.0
 
-toolchain go1.23.1
+toolchain go1.24.0
 
 require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.7.0
