@@ -24,6 +24,7 @@ type Environment struct {
 	SubscriptionID string `yaml:"subscription_id" json:"subscription_id"`
 	TenantID       string `yaml:"tenant_id" json:"tenant_id"`
 	Region         string `yaml:"region" json:"region"`
+	NodeSku        string `yaml:"node_sku" json:"node_sku"`
 	NodeDiskSizeGb int    `yaml:"node_disk_size_gb" json:"node_disk_size_gb"`
 }
 type AuthorizedIPRanges struct {
