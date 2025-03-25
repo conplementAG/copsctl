@@ -8,7 +8,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
   name                = var.build_agent_pool_name
   resource_group_name = data.azurerm_resource_group.buildagentpool.name
   location            = data.azurerm_resource_group.buildagentpool.location
-  sku                 = "Standard_B2s"
+  sku                 = var.build_agent_pool_node_sku == "" ? "Standard_B2s" : var.build_agent_pool_node_sku
   instances           = 0
 
   // either password or sshkey is required. push admin password in future to
