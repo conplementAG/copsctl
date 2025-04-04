@@ -46,7 +46,7 @@ func (o *Orchestrator) showInfo(typeName string) {
 	result, err := o.executor.Execute(fmt.Sprintf("kubectl get configmap -n coreops-public -o jsonpath=\"{.data['%s-info\\.json']}\" coreops-info", typeName))
 
 	if err != nil {
-		logrus.Errorf(err.Error())
+		logrus.Error(err.Error())
 		panic(err)
 	}
 
@@ -65,7 +65,7 @@ func (o *Orchestrator) showInfo(typeName string) {
 		indented, err := json.MarshalIndent(mapResult, "", "    ")
 
 		if err != nil {
-			logrus.Errorf(err.Error())
+			logrus.Error(err.Error())
 			panic(err)
 		}
 
