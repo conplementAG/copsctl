@@ -23,7 +23,7 @@ jobs:
       - name: Run Tests
         run: go test ./... --cover
 
-      - name: Run Goreleaser (Dry Run mode)
+      - name: Run GoReleaser (Dry Run mode)
         uses: goreleaser/goreleaser-action@v6
         with:
           version: '~> v2'
