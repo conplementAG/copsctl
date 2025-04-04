@@ -7,11 +7,11 @@ import (
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
-	"github.com/imroc/req"
+	"github.com/imroc/req/v3"
 	"github.com/mitchellh/go-homedir"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 	"io"
 	"net/http"
 	"os"
@@ -110,8 +110,8 @@ func downloadBlob(connectionString string) (string, error) {
 		return "", errors.New(fmt.Sprintf("HTTP request to download connection string content failed. Error: %s", anonymizeConnectionStringInError(connectionString, err.Error())))
 	}
 
-	responseStatusCode := res.Response().StatusCode
-	responseStatus := res.Response().Status
+	responseStatusCode := res.Response.StatusCode
+	responseStatus := res.Response.Status
 
 	if responseStatusCode != http.StatusOK {
 		return "", errors.New(fmt.Sprintf("HTTP request to download connection string content failed with non-success status code: %s\n%s", responseStatus, res.String()))
@@ -122,8 +122,8 @@ func downloadBlob(connectionString string) (string, error) {
 	return blob, nil
 }
 
-func tryGetBlobContent(connectionString string) (*req.Resp, error) {
-	return retry.DoWithData(func() (*req.Resp, error) {
+func tryGetBlobContent(connectionString string) (*req.Response, error) {
+	return retry.DoWithData(func() (*req.Response, error) {
 		resp, err := req.Get(connectionString)
 		if err != nil {
 			return nil, err

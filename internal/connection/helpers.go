@@ -2,7 +2,7 @@ package connection
 
 import (
 	"github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v3"
 )
 
 func marshalToYaml(input interface{}) string {

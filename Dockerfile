@@ -1,4 +1,4 @@
-FROM golang:1.23.1-bullseye
+FROM golang:1.24.2-bullseye
 
 RUN go version
 
