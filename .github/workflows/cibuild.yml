@@ -1,0 +1,32 @@
+name: cibuild
+
+on:
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ vars.GO_BUILD_VERSION }}
+
+      - name: Run Tests
+        run: go test ./... --cover
+
+      - name: Run Goreleaser (Dry Run mode)
+        uses: goreleaser/goreleaser-action@v6
+        with:
+          version: '~> v2'
+          args: release --snapshot --clean
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

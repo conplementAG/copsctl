@@ -1,15 +1,19 @@
 package main
 
 import (
+	"os"
+
 	"github.com/conplementag/cops-hq/v2/pkg/error_handling"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
 	"github.com/sirupsen/logrus"
-	"os"
 )
+
+// see .goreleaser.yaml ldflags
+var version = "local"
 
 func main() {
 	defer errorhandler()
-	hq := hq.NewQuiet("copsctl", "0.13.1", "copsctl.log")
+	hq := hq.NewQuiet("copsctl", version, "copsctl.log")
 	createCommands(hq)
 
 	error_handling.PanicOnAnyError = true

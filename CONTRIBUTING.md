@@ -1,6 +1,6 @@
 # Contributing Guidelines
 
-### How to build the tool
+## How to build the tool
 
 ```bash
 # Clone the project 
@@ -12,9 +12,6 @@ go build .
 
 ## How to create a release
 
-Release creation is partially a manual process. You need to tag the master branch first, and then you can either:
-
-- start the release in Azure DevOps
-- or perform the release manually using [GoReleaser](https://goreleaser.com/). For reference on the command, check the Dockerfile / Azure DevOps task.
-
-Release will be created for the new tag, including all changes since the previous tag in the changelog.
+Release creation is fully automatated with github workflows. A combination of release-please and goreleaser actions.
+Just create a pull request to the main branch with [Conventional Commit messages](https://www.conventionalcommits.org/).
+After completion of this pull request a release-please pull request is automatically created, which could be reviewed. Once approved, the release process starts. After completion, the newest release could found on the [Releases page](https://github.com/conplementAG/copsctl/releases).
