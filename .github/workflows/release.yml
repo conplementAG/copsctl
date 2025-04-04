@@ -9,6 +9,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   release-please:
@@ -35,7 +36,7 @@ jobs:
         with:
           go-version: ${{ vars.GO_BUILD_VERSION }}
 
-      - name: Run Goreleaser (Full Release)
+      - name: Run GoReleaser (Full Release)
         uses: goreleaser/goreleaser-action@v6
         with:
           version: '~> v2'
