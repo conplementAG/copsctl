@@ -9,7 +9,18 @@ copsctl - the conplement AG Kubernetes developer tooling
 
 ## Installation
 
+### Manual Installation
 Simply download a binary for your target system from [Releases](https://github.com/conplementAG/copsctl/releases), set it to you PATH, and you are ready to go.
+
+### Homebrew (macOS and Linux)
+You can install copsctl using Homebrew:
+
+```bash
+brew tap conplementag/tap
+brew install copsctl
+```
+
+For more details, visit [conplementAG/homebrew-tap](https://github.com/conplementAG/homebrew-tap).
 
 ## Contributing
 
