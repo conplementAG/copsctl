@@ -4,6 +4,9 @@ import (
 	"embed"
 	"errors"
 	"fmt"
+	"os"
+	"path/filepath"
+
 	"github.com/conplementAG/copsctl/internal/adapters/azure"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementAG/copsctl/internal/common"
@@ -18,8 +21,6 @@ import (
 	"github.com/conplementag/cops-hq/v2/pkg/recipes/terraform"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
-	"os"
-	"path/filepath"
 )
 
 //go:embed terraform/*
@@ -196,7 +197,7 @@ func (o *Orchestrator) initializeTerraform() (terraform.Terraform, error) {
 	if err != nil {
 		return nil, err
 	}
-	vmss, err := o.longNamingService.GenerateResourceName(resources.VirtualMachineScalSetLinux, "")
+	vmss, err := o.longNamingService.GenerateResourceName(resources.VirtualMachineScaleSetLinux, "")
 	if err != nil {
 		return nil, err
 	}
