@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.15.0](https://github.com/conplementAG/copsctl/compare/v0.14.0...v0.15.0) (2025-07-15)
+
+
+### Features
+
+* quarterly upgrades ([e103f47](https://github.com/conplementAG/copsctl/commit/e103f47f4d8ee1357e67b2107ff17152f816d49b))
+
 ## [0.14.0](https://github.com/conplementAG/copsctl/compare/v0.13.0...v0.14.0) (2025-04-04)
 
 
