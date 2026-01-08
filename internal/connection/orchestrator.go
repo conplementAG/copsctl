@@ -3,7 +3,14 @@ package connection
 import (
 	"errors"
 	"fmt"
-	"github.com/avast/retry-go/v4"
+	"io"
+	"net/http"
+	"os"
+	"path/filepath"
+	"strings"
+	"time"
+
+	"github.com/avast/retry-go/v5"
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
@@ -12,12 +19,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 	"gopkg.in/yaml.v3"
-	"io"
-	"net/http"
-	"os"
-	"path/filepath"
-	"strings"
-	"time"
 )
 
 type Orchestrator struct {
@@ -123,20 +124,22 @@ func downloadBlob(connectionString string) (string, error) {
 }
 
 func tryGetBlobContent(connectionString string) (*req.Response, error) {
-	return retry.DoWithData(func() (*req.Response, error) {
-		resp, err := req.Get(connectionString)
-		if err != nil {
-			return nil, err
-		}
-
-		return resp, nil
-	},
+	return retry.NewWithData[*req.Response](
 		retry.Delay(time.Second),
 		retry.DelayType(retry.BackOffDelay),
 		retry.OnRetry(func(n uint, err error) {
-			logrus.Debugf("Retry %d - happend because of %s", n+1, err)
+			logrus.Debugf("Retry %d - happened because of %s", n+1, err)
 		}),
 		retry.Attempts(3),
+	).Do(
+		func() (*req.Response, error) {
+			resp, err := req.Get(connectionString)
+			if err != nil {
+				return nil, err
+			}
+
+			return resp, nil
+		},
 	)
 }
 
