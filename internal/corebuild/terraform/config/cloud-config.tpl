@@ -24,10 +24,25 @@ disk_setup:
     table_type: gpt
     layout: [66, [33,82]]
     overwrite: true
+%{ if use_data_disk ~}
+  /dev/sdc:
+    table_type: gpt
+    layout: true
+    overwrite: true
+%{ endif ~}
 
 fs_setup:
   - device: ephemeral0.1
     filesystem: ext4
+%{ if use_data_disk ~}
+  - device: /dev/sdc
+    filesystem: ext4
+%{ endif ~}
 
 mounts:
+%{ if use_data_disk ~}
+  - ["/dev/sdc", "/agent"]
+%{ else ~}
   - ["ephemeral0.1", "/agent"]
+%{ endif ~}
+

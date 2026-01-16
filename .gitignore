@@ -24,3 +24,5 @@ terraform.tfstate.backup
 
 # corebuild
 internal/corebuild/configuration/cgo.yaml
+
+.idea/

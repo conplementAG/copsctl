@@ -4,7 +4,11 @@ environment:
   tenant_id: "?" # MANDATORY The id of the tenant where the subscription is located. Try to avoid cross tenant scenarios. Build and application infrastructure should be im same tenant.
   region: "francecentral" # MANDATORY. Make sure the core build infrastructure is deployed in different region than the infrastructure you plan to deploy with the created agentpool.
   node_sku: "Standard_B2s" # [Optional] SKU of the underlying virtual-machine-scale-set. Defaults to "Standard_B2s". Make sure, the provisioned subscription and region has sufficient usage and quotas for this setting.
-  node_disk_size_gb: 128 # [Optional] Default disk size is 30gb and can be extended if required
+  # [Optional] Default agent directory is mounted in ephemeral storage. Size depends on node sku. Add data disk if additional agent storage required.
+  data_disk:
+    enabled: false
+    size_gb: 32
+    type: "StandardSSD_LRS"
 
 security:
   authorized_ip_ranges:
