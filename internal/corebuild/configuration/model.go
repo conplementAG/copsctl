@@ -19,13 +19,18 @@ type SourceConfig struct {
 	Security    Security    `yaml:"security" json:"security"`
 	AzureDevops AzureDevops `yaml:"azure_devops" json:"azure_devops"`
 }
+type DataDisk struct {
+	Enabled bool   `yaml:"enabled" json:"enabled"`
+	SizeGb  int    `yaml:"size_gb" json:"size_gb"`
+	Type    string `yaml:"type" json:"type"`
+}
 type Environment struct {
-	Name           string `yaml:"name" json:"name"`
-	SubscriptionID string `yaml:"subscription_id" json:"subscription_id"`
-	TenantID       string `yaml:"tenant_id" json:"tenant_id"`
-	Region         string `yaml:"region" json:"region"`
-	NodeSku        string `yaml:"node_sku" json:"node_sku"`
-	NodeDiskSizeGb int    `yaml:"node_disk_size_gb" json:"node_disk_size_gb"`
+	Name           string   `yaml:"name" json:"name"`
+	SubscriptionID string   `yaml:"subscription_id" json:"subscription_id"`
+	TenantID       string   `yaml:"tenant_id" json:"tenant_id"`
+	Region         string   `yaml:"region" json:"region"`
+	NodeSku        string   `yaml:"node_sku" json:"node_sku"`
+	DataDisk       DataDisk `yaml:"data_disk" json:"data_disk"`
 }
 type AuthorizedIPRanges struct {
 	Cidrs []string `yaml:"cidrs" json:"cidrs"`

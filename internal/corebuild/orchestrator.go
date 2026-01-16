@@ -223,7 +223,10 @@ func (o *Orchestrator) initializeTerraform() (terraform.Terraform, error) {
 	vars["build_agent_pool_lb_name"] = loadBalancerName
 	vars["build_agent_pool_name"] = vmss
 	vars["build_agent_pool_node_sku"] = o.config.Environment.NodeSku
-	vars["build_agent_pool_node_disk_size_gb"] = o.config.Environment.NodeDiskSizeGb
+
+	vars["build_agent_pool_data_disk_enabled"] = o.config.Environment.DataDisk.Enabled
+	vars["build_agent_pool_data_disk_size_gb"] = o.config.Environment.DataDisk.SizeGb
+	vars["build_agent_pool_data_disk_type"] = o.config.Environment.DataDisk.Type
 
 	vars["azure_devops_project_name"] = o.config.AzureDevops.ProjectName
 	vars["azure_devops_service_connection_name"] = fmt.Sprintf("%s-federated-serviceconnection", o.config.Environment.Name)

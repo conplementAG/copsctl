@@ -21,7 +21,9 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
   upgrade_mode                = "Manual"
   single_placement_group      = false
   platform_fault_domain_count = 1
-  custom_data = filebase64("${path.module}/config/cloud-config.txt")
+  custom_data = base64encode(templatefile("${path.module}/config/cloud-config.tpl", {
+    use_data_disk = var.build_agent_pool_data_disk_enabled
+  }))
 
   # https://learn.microsoft.com/en-us/azure/virtual-machine-scale-sets/virtual-machine-scale-sets-automatic-upgrade#supported-os-images
   source_image_reference {
@@ -34,7 +36,17 @@ resource "azurerm_linux_virtual_machine_scale_set" "buildagentpool" {
   os_disk {
     storage_account_type = "StandardSSD_LRS"
     caching              = "ReadWrite"
-    disk_size_gb         = var.build_agent_pool_node_disk_size_gb == 0 ? null : var.build_agent_pool_node_disk_size_gb
+  }
+
+  dynamic "data_disk" {
+    for_each = var.build_agent_pool_data_disk_enabled ? [1] : []
+
+    content {
+      lun                  = 0
+      disk_size_gb         = var.build_agent_pool_data_disk_size_gb
+      caching              = "ReadWrite"
+      storage_account_type = var.build_agent_pool_data_disk_type
+    }
   }
 
   identity {
