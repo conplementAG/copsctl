@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.18.0](https://github.com/conplementAG/copsctl/compare/v0.17.0...v0.18.0) (2026-01-16)
+
+
+### Features
+
+* **datadisk:** remove configuration for os disk, add data disk config ([8c89e44](https://github.com/conplementAG/copsctl/commit/8c89e44cd3b1a5eef3ebdb0839c48c1add4493a9))
+
 ## [0.17.0](https://github.com/conplementAG/copsctl/compare/v0.16.0...v0.17.0) (2026-01-09)
 
 
