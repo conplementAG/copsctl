@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.19.0](https://github.com/conplementAG/copsctl/compare/v0.18.0...v0.19.0) (2026-01-23)
+
+
+### Features
+
+* **deps:** bump github.com/conplementag/cops-hq/v2 from 2.40.0 to 2.40.1 ([dce9be9](https://github.com/conplementAG/copsctl/commit/dce9be90b29a24bc6b14563afa21b6d61d233ffb))
+
 ## [0.18.0](https://github.com/conplementAG/copsctl/compare/v0.17.0...v0.18.0) (2026-01-16)
 
 
