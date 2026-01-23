@@ -6,7 +6,7 @@ require (
 	github.com/Azure/azure-sdk-for-go/sdk/azidentity v1.13.1
 	github.com/Azure/azure-sdk-for-go/sdk/resourcemanager/resources/armresources/v3 v3.0.1
 	github.com/avast/retry-go/v5 v5.0.0
-	github.com/conplementag/cops-hq/v2 v2.40.0
+	github.com/conplementag/cops-hq/v2 v2.40.1
 	github.com/imroc/req/v3 v3.57.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/rs/xid v1.6.0
