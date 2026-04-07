@@ -5,7 +5,7 @@
 copsctl - the conplement AG Kubernetes developer tooling
 
 ## Requirements
-- [kubectl >= 1.29.9](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
+- [kubectl >= 1.33.6](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 
 ## Installation
 

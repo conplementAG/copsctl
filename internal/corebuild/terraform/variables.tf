@@ -2,7 +2,6 @@
 // Common
 ####################################
 variable "resource_group_name" {}
-variable "region" {}
 
 ####################################
 // Identity
