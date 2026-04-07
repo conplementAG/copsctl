@@ -2,11 +2,11 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.57.0"
+      version = "4.67.0"
     }
     azuredevops = {
       source  = "microsoft/azuredevops"
-      version = "1.12.2"
+      version = "1.15.0"
     }
   }
   backend "azurerm" {
@@ -14,7 +14,7 @@ terraform {
     key            = "terraform.tfstate"
   }
 
-  required_version = ">= 1.13"
+  required_version = ">= 1.14"
 }
 
 provider "azurerm" {

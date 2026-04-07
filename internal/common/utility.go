@@ -7,7 +7,3 @@ func FatalOnError(err error) {
 		logrus.Fatal(err)
 	}
 }
-
-func ToPtr[T any](source T) *T {
-	return &source
-}

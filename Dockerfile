@@ -1,4 +1,4 @@
-FROM golang:1.25.5-bookworm
+FROM golang:1.26.1-bookworm
 
 RUN go version
 

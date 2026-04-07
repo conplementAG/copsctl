@@ -91,10 +91,10 @@ func (o *Orchestrator) CreateInfrastructure() {
 	err = tf.DeployFlow(false, false, o.autoApprove)
 	common.FatalOnError(err)
 
-	publicEgressIp, err := tf.Output(common.ToPtr("public_egress_ip"))
+	publicEgressIp, err := tf.Output(new("public_egress_ip"))
 	common.FatalOnError(err)
 
-	managedIdentityName, err := tf.Output(common.ToPtr("managed_identity_name"))
+	managedIdentityName, err := tf.Output(new("managed_identity_name"))
 	common.FatalOnError(err)
 
 	err = o.runCleanupActions()
@@ -205,7 +205,6 @@ func (o *Orchestrator) initializeTerraform() (terraform.Terraform, error) {
 	vars := make(map[string]interface{})
 
 	vars["resource_group_name"] = o.resourceGroupName
-	vars["region"] = o.config.Environment.Region
 
 	vars["managed_identity_name"] = managedIdentityName
 	vars["vnet_name"] = vnetName
