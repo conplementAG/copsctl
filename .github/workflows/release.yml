@@ -43,3 +43,26 @@ jobs:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  bump-homebrew-tap:
+    # Runs only after a successful release (goreleaser skipped -> this is skipped too).
+    needs: [goreleaser]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Resolve released version
+        id: ver
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          version=$(gh release view --repo ${{ github.repository }} --json tagName -q .tagName | sed 's/^v//')
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Trigger homebrew-tap formula update
+        env:
+          # PAT/App token with "contents: write" on conplementAG/homebrew-tap.
+          # The default GITHUB_TOKEN cannot dispatch events to another repository.
+          GH_TOKEN: ${{ secrets.HOMEBREW_TAP_TOKEN }}
+        run: |
+          gh api repos/conplementAG/homebrew-tap/dispatches \
+            -f event_type=copsctl-release \
+            -f "client_payload[version]=${{ steps.ver.outputs.version }}"
