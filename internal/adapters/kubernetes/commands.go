@@ -2,11 +2,13 @@ package kubernetes
 
 import (
 	"encoding/json"
+	"strings"
+
 	"github.com/conplementAG/copsctl/internal/common"
 	"github.com/conplementAG/copsctl/internal/common/file_processing"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
+	"github.com/conplementag/cops-hq/v2/pkg/error_handling"
 	"github.com/sirupsen/logrus"
-	"strings"
 )
 
 func PrintAllCopsNamespaces(executor commands.Executor) error {
@@ -89,6 +91,10 @@ func DeleteString(executor commands.Executor, content string) (string, error) {
 }
 
 func CanIGetPods(executor commands.Executor, namespace string) bool {
+	// A non-"yes" answer exits non-zero; tolerate it so the caller can retry instead of panicking.
+	defer func(previous bool) { error_handling.PanicOnAnyError = previous }(error_handling.PanicOnAnyError)
+	error_handling.PanicOnAnyError = false
+
 	data, err := executor.ExecuteWithProgressInfo("kubectl auth can-i get pods -n " + namespace)
 	return err == nil && strings.TrimSuffix(data, "\n") == "yes"
 }
