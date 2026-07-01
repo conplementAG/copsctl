@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.20.1](https://github.com/conplementAG/copsctl/compare/v0.20.0...v0.20.1) (2026-07-01)
+
+
+### Bug Fixes
+
+* **namespace:** prevent CanIGetPods from panicking on denied access ([903c29d](https://github.com/conplementAG/copsctl/commit/903c29dc074b137665c2dcdb64db8fd33815712c))
+
 ## [0.20.0](https://github.com/conplementAG/copsctl/compare/v0.19.0...v0.20.0) (2026-04-07)
 
 
