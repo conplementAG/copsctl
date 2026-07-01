@@ -2,11 +2,12 @@ package namespace
 
 import (
 	"fmt"
+	"time"
+
 	"github.com/conplementAG/copsctl/internal/cmd/flags"
 	"github.com/conplementag/cops-hq/v2/pkg/commands"
 	"github.com/conplementag/cops-hq/v2/pkg/hq"
 	"github.com/sirupsen/logrus"
-	"time"
 
 	"github.com/conplementAG/copsctl/internal/adapters/kubernetes"
 	"github.com/spf13/viper"
@@ -87,17 +88,24 @@ func (o *Orchestrator) Delete() {
 }
 
 func ensureNamespaceAccess(executor commands.Executor, namespace string) {
+	// RBAC bindings are reconciled asynchronously, so poll for up to ~60s until access is available.
+	const attempts = 20
+
 	status := false
 
-	for i := 0; i < 20; i++ {
+	for i := 0; i < attempts; i++ {
 		status = kubernetes.CanIGetPods(executor, namespace)
-		if status == true {
+		if status {
 			break
 		}
+
+		logrus.Infof("Namespace access not ready yet (attempt %d/%d), waiting for RBAC bindings to propagate...", i+1, attempts)
 		time.Sleep(3 * time.Second)
 	}
 
-	if status == false {
-		panic("Could not verify access to pods in created namespace.")
+	if !status {
+		panic("Could not verify access to pods in the created namespace after ~60s. " +
+			"The namespace RBAC bindings may not have been reconciled in time - retry the deployment, " +
+			"and if the problem persists check the events on the CopsNamespace resource.")
 	}
 }
