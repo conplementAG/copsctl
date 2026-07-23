@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.21.0](https://github.com/conplementAG/copsctl/compare/v0.20.1...v0.21.0) (2026-07-23)
+
+
+### Features
+
+* **deps:** quarterly updates ([047c901](https://github.com/conplementAG/copsctl/commit/047c901903875ac6fce6fd443117553f39e54f57))
+
 ## [0.20.1](https://github.com/conplementAG/copsctl/compare/v0.20.0...v0.20.1) (2026-07-01)
 
 
