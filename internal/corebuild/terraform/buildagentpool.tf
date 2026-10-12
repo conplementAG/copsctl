@@ -20,12 +20,11 @@ resource "azuredevops_serviceendpoint_azurerm" "default" {
 }
 
 resource "azurerm_federated_identity_credential" "default" {
-  name                = "federated-credential-elastic-pool"
-  resource_group_name = data.azurerm_resource_group.buildagentpool.name
-  parent_id           = azurerm_user_assigned_identity.buildagentpool.id
-  audience            = ["api://AzureADTokenExchange"]
-  issuer              = azuredevops_serviceendpoint_azurerm.default.workload_identity_federation_issuer
-  subject             = azuredevops_serviceendpoint_azurerm.default.workload_identity_federation_subject
+  name                      = "federated-credential-elastic-pool"
+  user_assigned_identity_id = azurerm_user_assigned_identity.buildagentpool.id
+  audience                  = ["api://AzureADTokenExchange"]
+  issuer                    = azuredevops_serviceendpoint_azurerm.default.workload_identity_federation_issuer
+  subject                   = azuredevops_serviceendpoint_azurerm.default.workload_identity_federation_subject
 }
 
 resource "azuredevops_elastic_pool" "default" {
